@@ -22,9 +22,14 @@ export async function POST(request: NextRequest) {
         const hashedPassword = await bcrypt.hash(password, salt);
 
 
-        const token = await jwt.sign({ email, fullName, mobile }, 'st4rk', { expiresIn: '8h' });
-        const newUser = new User({ fullName, email, mobile, password: hashedPassword });
-        await newUser.save();
+        const newUser = await User.create({
+            fullName,
+            email,
+            mobile,
+            password: hashedPassword,
+        });
+        console.log("New user created:", newUser);
+        const token = await jwt.sign({ id:newUser._id,email, fullName, mobile }, 'st4rk', { expiresIn: '8h' });
 
         const response = NextResponse.json({ message: "User created successfully", status: true }, { status: 201 });
         // Set the token in the response cookies    

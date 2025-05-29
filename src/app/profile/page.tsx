@@ -1,5 +1,5 @@
 "use client";
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 import { SplitText } from 'gsap/dist/SplitText';
@@ -10,8 +10,20 @@ if (typeof window !== 'undefined') {
     gsap.registerPlugin(ScrollTrigger, SplitText);
 }
 
+interface UserData {
+    email: string;
+    fullName: string;
+    isAdmin: boolean;
+    isVerified: boolean;
+    mobile: string;
+    __v: number;
+    _id: string;
+}
+
 export default function Home() {
+    const [userData, setUserData] = useState<UserData | null>(null);
     useEffect(() => {
+        getUserData()
         // Only run animations on client side
         if (typeof window !== 'undefined') {
             // Your GSAP animations here
@@ -243,10 +255,25 @@ export default function Home() {
         };
     }, []);
 
+    const getUserData = async () => {
+        try {
+
+            const response = await fetch('/api/me');
+
+            const data = await response.json();
+            console.log(data, 'data');
+            setUserData(data.result);
+        }
+        catch (error) {
+            console.error("Error fetching user data:", error);
+        }
+    }
+
+
     return (
         <main>
             <Header />
-            <IntroSection />
+            <IntroSection data={userData} />
             <TextSection />
             <WorksSection />
             <FooterSection />
@@ -255,6 +282,28 @@ export default function Home() {
     );
 }
 
+const IntroSection = ({data}:any) => {
+    return <>
+        <section className="section section--intro">
+            <img
+                className="hero__image"
+                src="https://images.unsplash.com/photo-1580983563878-706ee872c772?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=934&q=80"
+                alt="Hero background"
+            />
+
+            <CrossIcon className="cross-1" />
+            <CrossIcon className="cross-2" />
+
+            <div className="ring ring--left"></div>
+            <div className="ring ring--right"></div>
+            {/* {console.log(data, 'data')} */}
+            <h3 className="hero__title hero__title--1">HI, I'M {data?.fullName}</h3>
+            <h3 className="hero__title hero__title--2">Mern Developer</h3>
+
+            <p className="hero__copy"><span>I'm not the one in the photo but blue is essential</span></p>
+        </section>
+    </>
+}
 
 const FooterSection = () => (
     <section className="section section--footer">
@@ -302,26 +351,7 @@ const TextSection = () => (
         </div>
     </section>
 )
-const IntroSection = () => (
-    <section className="section section--intro">
-        <img
-            className="hero__image"
-            src="https://images.unsplash.com/photo-1580983563878-706ee872c772?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=934&q=80"
-            alt="Hero background"
-        />
 
-        <CrossIcon className="cross-1" />
-        <CrossIcon className="cross-2" />
-
-        <div className="ring ring--left"></div>
-        <div className="ring ring--right"></div>
-
-        <h3 className="hero__title hero__title--1">HI, I'M St4rk</h3>
-        <h3 className="hero__title hero__title--2">Mern Developer</h3>
-
-        <p className="hero__copy"><span>I'm not the one in the photo but blue is essential</span></p>
-    </section>
-)
 
 const TwitterIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="var(--skyblue)" style={{ marginBottom: '2rem' }} strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">

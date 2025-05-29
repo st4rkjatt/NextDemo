@@ -143,7 +143,7 @@ const PokemonSignupForm = () => {
                 return;
             }
             toast.success(data.message);
-            console.log('User signed up successfully:', data);
+            // console.log('User signed up successfully:', data);
             setForm({
                 fullName: '',
                 email: '',
@@ -151,7 +151,7 @@ const PokemonSignupForm = () => {
                 password: ''
             });
 
-            router.push('/login'); // Redirect to login page after successful signup
+            router.push('/profile'); // Redirect to login page after successful signup
         } catch (error) {
             console.error('Error signing up user:', error);
         }
