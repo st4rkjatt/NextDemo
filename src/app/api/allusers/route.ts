@@ -6,14 +6,14 @@ import { connect } from "@/app/dbConfig/dbConfig";
 connect();
 export async function GET(request: NextRequest) {
     try {
-       
-        const userId = await getDataToken(request);
-      
         
+        const userId = await getDataToken(request);
         if (!userId) {
             return NextResponse.json({ message: "Unauthorized", status: false }, { status: 401 });
         }
-        const result = await User.findById(userId).select("-password");
+        
+        const result = await User.find({ _id: { $ne: userId } }).select("-password");
+
         if (!result) {
             return NextResponse.json({ message: "User not found", status: false }, { status: 404 });
         }

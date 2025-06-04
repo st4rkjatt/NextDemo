@@ -20,6 +20,4 @@ export async function getDataToken(request: NextRequest) {
         throw new Error(error.message);
 
     }
-
-
 }

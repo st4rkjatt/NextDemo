@@ -108,14 +108,49 @@ const PokemonSignupForm = () => {
         email: '',
         mobile: '',
         password: ''
-    })
+    });
+    const [errors, setErrors] = useState<{ [key: string]: string }>({});
+
+    const validateForm = () => {
+        const newErrors: { [key: string]: string } = {};
+        if (!form.fullName.trim()) {
+            newErrors.fullName = 'Full Name is required';
+        }
+        if (!form.email.trim()) {
+            newErrors.email = 'Email is required';
+        } else if (!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(form.email)) {
+            newErrors.email = 'Invalid email address';
+        }
+        if (!form.mobile.trim()) {
+            newErrors.mobile = 'Mobile is required';
+        } else if (!/^\d{10}$/.test(form.mobile)) {
+            newErrors.mobile = 'Invalid mobile number';
+        }
+        if (!form.password.trim()) {
+            newErrors.password = 'Password is required';
+        } else if (form.password.length < 6) {
+            newErrors.password = 'Password must be at least 6 characters';
+        }
+        setErrors(newErrors);
+        if (Object.keys(newErrors).length > 0) {
+            return false;
+        }
+        return true;
+    };
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log('Form submitted:', form);
+        if (!validateForm()) return;
         signupUser(form);
     };
 
+    const getInputClass = (field: string) =>
+        errors[field]
+            ? 'signup-roweerror'
+            : 'signup-row';
+
+    console.log('getInputClass("fullName")', getInputClass("fullName"));
+    console.log('errors', errors);
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setForm((prevForm) => ({
@@ -186,24 +221,46 @@ const PokemonSignupForm = () => {
                         <form className="sign-back text-white" onSubmit={handleSubmit}>
                             <h1 ref={h1Ref}>sign UP</h1>
 
-                            <div className="signup-row " ref={setRowRef(0)}>
-                                <AiOutlineUser className="absolute left-[30%] top-2" />
-                                <input type="text" name="fullName" value={form.fullName} placeholder="FULL NAME" onChange={handleChange} />
+                            <div className={`${getInputClass("fullName")} signup-row`} ref={setRowRef(0)}>
+                                <div className=''>
+                                    <AiOutlineUser className="absolute left-[30%] top-2" />
+                                    <input type="text" name="fullName" value={form.fullName} placeholder="FULL NAME" onChange={handleChange} />
+                                </div>
+                                {errors.fullName && (
+                                    <span className="error-message text-red-500 text-xs">{errors.fullName}</span>
+                                )}
                             </div>
 
-                            <div className="signup-row " ref={setRowRef(1)}>
-                                <AiOutlineMail className="absolute left-[30%] top-2" />
-                                <input type="text" name="email" value={form.email} placeholder="EMAIL" onChange={handleChange} />
+                            <div className={`${getInputClass("email")} signup-row`} ref={setRowRef(1)}>
+                                <div>
+
+                                    <AiOutlineMail className="absolute left-[30%] top-2" />
+                                    <input type="text" name="email" value={form.email} placeholder="EMAIL" onChange={handleChange} />
+                                </div>
+                                {errors.email && (
+                                    <span className="error-message text-red-500 text-xs">{errors.email}</span>
+                                )}
                             </div>
 
-                            <div className="signup-row" ref={setRowRef(2)}>
-                                <BiPhoneCall className="absolute left-[30%] top-2" />
-                                <input type="text" name="mobile" value={form.mobile} placeholder="MOBILE" onChange={handleChange} />
+                            <div className={`${getInputClass("mobile")} signup-row`} ref={setRowRef(2)}>
+                                <div>
+
+                                    <BiPhoneCall className="absolute left-[30%] top-2" />
+                                    <input type="text" name="mobile" value={form.mobile} placeholder="MOBILE" onChange={handleChange} />
+                                </div>
+                                {errors.mobile && (
+                                    <span className="error-message text-red-500 text-xs">{errors.mobile}</span>
+                                )}
                             </div>
 
-                            <div className="signup-row" ref={setRowRef(3)}>
-                                <RiLockPasswordLine className="absolute left-[30%] top-2" />
-                                <input type="password" name="password" value={form.password} placeholder="PASSWORD" onChange={handleChange} />
+                            <div className={`${getInputClass("password")} signup-row`} ref={setRowRef(3)}>
+                                <div>
+                                    <RiLockPasswordLine className="absolute left-[30%] top-2" />
+                                    <input type="password" name="password" value={form.password} placeholder="PASSWORD" onChange={handleChange} />
+                                </div>
+                                {errors.password && (
+                                    <span className="error-message text-red-500 text-xs">{errors.password}</span>
+                                )}
                             </div>
 
                             <div className="signup-row flex justify-center text-center" ref={setRowRef(4)}>

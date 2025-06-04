@@ -115,6 +115,9 @@ body {
     color: #fff;
     font-family: 'Ubuntu', sans-serif;
 }
+.signup-roweerror input{
+    border-bottom: 1px solid #f62c2c !important;
+}
 
 .signup-row input::-webkit-input-placeholder {
     color: #fff;

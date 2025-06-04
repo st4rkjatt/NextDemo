@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ message: "Invalid password", status: false }, { status: 400 });
         }
         // Create a JWT token
-        const token = await jwt.sign({ email: userDetails.email, fullName: userDetails.fullName, mobile: userDetails.mobile }, 'st4rk', { expiresIn: '8h' });
+        const token = await jwt.sign({ id:userDetails._id,email: userDetails.email, fullName: userDetails.fullName, mobile: userDetails.mobile }, 'st4rk', { expiresIn: '8h' });
         // Create a response object
 
         const response = NextResponse.json({ message: "User logged in successfully", status: true }, { status: 200 });
