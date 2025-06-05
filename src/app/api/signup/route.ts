@@ -29,7 +29,11 @@ export async function POST(request: NextRequest) {
             password: hashedPassword,
         });
         console.log("New user created:", newUser);
-        const token = await jwt.sign({ id:newUser._id,email, fullName, mobile }, 'st4rk', { expiresIn: '8h' });
+        const secret = process.env.SECRET;
+        if (!secret) {
+            throw new Error("JWT secret is not defined in environment variables.");
+        }
+        const token = await jwt.sign({ id: newUser._id, email, fullName, mobile }, secret, { expiresIn: '8h' });
 
         const response = NextResponse.json({ message: "User created successfully", status: true }, { status: 201 });
         // Set the token in the response cookies    

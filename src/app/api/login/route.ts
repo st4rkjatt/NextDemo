@@ -22,8 +22,21 @@ export async function POST(request: NextRequest) {
         if (!isPasswordValid) {
             return NextResponse.json({ message: "Invalid password", status: false }, { status: 400 });
         }
+        const secret = process.env.SECRET;
+        if (!secret) {
+            throw new Error("JWT secret is not defined in environment variables.");
+        }
         // Create a JWT token
-        const token = await jwt.sign({ id:userDetails._id,email: userDetails.email, fullName: userDetails.fullName, mobile: userDetails.mobile }, 'st4rk', { expiresIn: '8h' });
+        const token = jwt.sign(
+            {
+                id: userDetails._id,
+                email: userDetails.email,
+                fullName: userDetails.fullName,
+                mobile: userDetails.mobile
+            },
+            secret,
+            { expiresIn: '8h' }
+        );
         // Create a response object
 
         const response = NextResponse.json({ message: "User logged in successfully", status: true }, { status: 200 });
