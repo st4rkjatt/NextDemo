@@ -297,10 +297,10 @@ const IntroSection = ({ data }: { data: UserData | null }) => {
             <div className="ring ring--left"></div>
             <div className="ring ring--right"></div>
             {/* {console.log(data, 'data')} */}
-            <h3 className="hero__title hero__title--1">HI, I'M {data?.fullName}</h3>
+            <h3 className="hero__title hero__title--1">HI, I&#39;M {data?.fullName}</h3>
             <h3 className="hero__title hero__title--2">Mern Developer</h3>
 
-            <p className="hero__copy"><span>I'm not the one in the photo but blue is essential</span></p>
+            <p className="hero__copy"><span>I&#39;m not the one in the photo but blue is essential</span></p>
         </section>
     </>
 }
@@ -346,7 +346,7 @@ const WorksSection = () => (
 const TextSection = () => (
     <section className="section section--text">
         <div className="box">
-            Hi, I'm St4rk, a Mern Developer. I love creating web applications that are not only functional but also visually appealing. My journey in web development has been exciting, and I'm always eager to learn new technologies and improve my skills.
+            Hi, I&#39;m St4rk, a Mern Developer. I love creating web applications that are not only functional but also visually appealing. My journey in web development has been exciting, and I&#39;m always eager to learn new technologies and improve my skills.
             <div className="line"></div>
         </div>
     </section>

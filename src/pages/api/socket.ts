@@ -30,7 +30,7 @@ const socket = (_: NextApiRequest, res: NextApiResponseSocketIO) => {
       socket.on("disconnect", () => {
         // Remove the user from the map on disconnect
         const entries = userSocketMap.entries();
-        for (let [userId, socketId] of entries) {
+        for (const [userId, socketId] of entries) {
           if (socketId === socket.id) {
             userSocketMap.delete(userId);
             break;

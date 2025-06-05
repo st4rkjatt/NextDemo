@@ -2,13 +2,20 @@
 
 import { useEffect, useState } from "react"
 
+type AllUserType = {
+    _id: string;
+    fullName: string;
+    email: string;
+    mobile: string;
+};
 type FriendLeftBoxProps = {
-    setSelectedChatUser: (user: any) => void;
+    setSelectedChatUser: (user: AllUserType) => void;
 };
 
+
 const FrindLeftBox = ({ setSelectedChatUser }: FriendLeftBoxProps) => {
-    const [userData, setUserData] = useState<any>()
-    const [allUsers, setAllUsers] = useState<any>()
+    const [userData, setUserData] = useState<AllUserType | undefined>(undefined);
+    const [allUsers, setAllUsers] = useState<AllUserType[] | undefined>(undefined);
 
     useEffect(() => {
         getUserData()
@@ -71,7 +78,7 @@ const FrindLeftBox = ({ setSelectedChatUser }: FriendLeftBoxProps) => {
         {/* Contacts */}
         <div className=" flex-1 overflow-auto ">
 
-            {allUsers?.map((user: any) => {
+            {allUsers?.map((user: AllUserType) => {
                 return <div className="px-3 flex items-center bg-grey-light cursor-pointer border-b border-grey hover:bg-gray-500 hover:shadow-md" onClick={() => setSelectedChatUser(user)}>
                     <div>
                         <img className="h-12 w-12 rounded-full"

@@ -1,5 +1,9 @@
 import { NextRequest } from "next/server";
 import jwt from "jsonwebtoken";
+interface DecodedToken {
+    id: string;
+  
+}
 export async function getDataToken(request: NextRequest) {
     try {
         const token = request.cookies.get('token')?.value || '';
@@ -8,16 +12,17 @@ export async function getDataToken(request: NextRequest) {
             throw new Error("No token found");
         }
 
-        const decodedToken = await jwt.verify(token, 'st4rk');
+        const decodedToken = await jwt.verify(token, 'st4rk') as DecodedToken;
 
-  
         if (!decodedToken) {
             throw new Error("Invalid token");
         }
-        return decodedToken?.id
-    } catch (error: any) {
+        return decodedToken.id;
+    } catch (error: unknown) {
         console.error("Error getting data token:", error);
-        throw new Error(error.message);
-
+        if (error instanceof Error) {
+            throw new Error(error.message);
+        }
+        throw new Error("Unknown error occurred");
     }
 }

@@ -46,7 +46,7 @@ const InteractiveCanvas: React.FC = () => {
 
       cubesRef.current = [];
 
-      for (let _y = 0, i = 0; _y < chRef.current; _y++) {
+      for (let _y = 0; _y < chRef.current; _y++) {
         for (let _x = 0; _x < cwRef.current; _x++) {
           const cube: Cube = {
             img,
@@ -79,7 +79,6 @@ const InteractiveCanvas: React.FC = () => {
           };
           cube.draw();
           cubesRef.current.push(cube);
-          i++;
         }
       }
 

@@ -11,13 +11,14 @@ const Input = ({ receiverId, submitMessageFunc }: InputProps) => {
     const [message, setMessage] = useState<string>("")
     const [loading, setLoading] = useState<boolean>()
 
-    const handleSubmit = (e: any) => {
+
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         sendMessage(message)
         submitMessageFunc(message)
     }
 
-    const sendMessage = async (message:string) => {
+    const sendMessage = async (message: string) => {
         try {
             setLoading(true);
             const response = await fetch(`/api/sendmessage/${receiverId}`, {

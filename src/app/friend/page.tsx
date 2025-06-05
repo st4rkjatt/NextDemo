@@ -5,8 +5,14 @@ import FriendLeftBox from "../components/friendLeftBox"
 import FriendRightBox from "../components/friendRightBox"
 import Header from "../components/header"
 
+type AllUserType = {
+    _id: string;
+    fullName: string;
+    email: string;
+    mobile: string;
+};
 const FriendPage = () => {
-    const [selectedChatUser, setSelectedChatUser] = useState<any>("")
+    const [selectedChatUser, setSelectedChatUser] = useState<AllUserType | null>(null)
 
     return <div>
         <Header />

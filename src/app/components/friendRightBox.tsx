@@ -9,12 +9,20 @@ import { useChatStore } from "@/stores/store"
 interface ChatUser {
     _id: string;
     fullName?: string;
-   
+
 }
+interface Message {
+  _id?: string;
+  senderId: string;
+  receiverId: string;
+  message: string;
+  createdAt?: string;
+}
+
 
 const FriendRightBox = ({ selectedChatUser }: { selectedChatUser: ChatUser | null }) => {
 
-    const [userData, setUserData] = useState<any>()
+    const [userData, setUserData] = useState<ChatUser | null>(null);
     const { messages, setMessages, addMessage } = useChatStore();
     console.log(messages, 'storeData')
     const getUserData = async () => {
@@ -36,6 +44,8 @@ const FriendRightBox = ({ selectedChatUser }: { selectedChatUser: ChatUser | nul
     useEffect(() => {
         if (selectedChatUser) {
             getConversation()
+
+            if (!userData) return;
 
             const userDetails = {
                 userId: userData._id,
@@ -86,7 +96,7 @@ const FriendRightBox = ({ selectedChatUser }: { selectedChatUser: ChatUser | nul
     useEffect(() => {
         if (!socket) return;
 
-        const handleIncomingMessage = (msg: any) => {
+        const handleIncomingMessage = (msg: Message) => {
             addMessage(msg);
         };
 
@@ -154,7 +164,7 @@ const FriendRightBox = ({ selectedChatUser }: { selectedChatUser: ChatUser | nul
 
 
                         {
-                            messages?.map((msg: any) => {
+                            messages?.map((msg: Message) => {
                                 return <>
                                     {selectedChatUser?._id === msg.receiverId ? <>
                                         <div className="flex justify-end mb-2">
@@ -163,7 +173,7 @@ const FriendRightBox = ({ selectedChatUser }: { selectedChatUser: ChatUser | nul
                                                     {msg?.message}
                                                 </p>
                                                 <p className="text-right text-xs text-grey-dark mt-1">
-                                                    {moment(msg.createAt).format("HH:mm")}
+                                                    {moment(msg.createdAt).format("HH:mm")}
                                                 </p>
                                             </div>
                                         </div>
@@ -176,7 +186,7 @@ const FriendRightBox = ({ selectedChatUser }: { selectedChatUser: ChatUser | nul
                                                 </p>
 
                                                 <p className="text-right text-xs text-grey-dark mt-1">
-                                                    {moment(msg.createAt).format("HH:mm")}
+                                                    {moment(msg.createdAt).format("HH:mm")}
                                                 </p>
                                             </div>
                                         </div>
