@@ -1,4 +1,4 @@
-import { getDataToken } from "@/app/helpers/getDataToken";
+import { getDataToken } from "@/app/utils/helper/getDataToken";
 import User from "@/app/models/userModel";
 import { NextRequest, NextResponse } from "next/server";
 import { connect } from "@/app/dbConfig/dbConfig";
@@ -24,7 +24,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
             return NextResponse.json({ message: "Conversation not found", status: true, result: [] }, { status: 200 });
 
         }
-        console.log(conversation, 'coversation')
+        // console.log(conversation, 'coversation')
 
         return NextResponse.json({ message: "Conversation  found", status: true, result: conversation.messages }, { status: 200 });
 

@@ -3,47 +3,104 @@
 import moment from "moment"
 import Input from "./input"
 import { useEffect, useRef, useState } from "react"
+import useSocket from "../utils/hooks/useSocket"
+import socket from "../utils/helper/socketGlobal"
+import { useChatStore } from "@/stores/store"
+
 
 const FriendRightBox = ({ selectedChatUser }: any) => {
-    console.log(selectedChatUser, 'selectedChatUser')
 
-    const [messages, setMessages] = useState<any>()
-
-    useEffect(() => {
-        getConversation()
-    }, [selectedChatUser])
-
-    const getConversation = async () => {
+    const [userData, setUserData] = useState<any>()
+    const { messages, setMessages, addMessage } = useChatStore();
+    console.log(messages, 'storeData')
+    const getUserData = async () => {
         try {
-
-            const response = await fetch(`/api/getconversation/${selectedChatUser?._id}`);
+            const response = await fetch('/api/me');
             const data = await response.json();
             console.log(data, 'data');
-            setMessages(data.result);
+            setUserData(data.result);
         }
         catch (error) {
             console.error("Error fetching user data:", error);
         }
     }
 
+    useEffect(() => {
+        getUserData()
+    }, [])
+
+    useEffect(() => {
+        if (selectedChatUser) {
+            getConversation()
+
+            const userDetails = {
+                userId: userData._id,
+            };
+
+            socket.emit('registerUser', userDetails);
+        }
+    }, [selectedChatUser])
+
+    const getConversation = async () => {
+        try {
+            const response = await fetch(`/api/getconversation/${selectedChatUser?._id}`);
+            const data = await response.json();
+            setMessages(data.result || []);
+        } catch (error) {
+            console.error("Error fetching conversation:", error);
+        }
+    };
+
+
     const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
- useEffect(() => {
-    const timer = setTimeout(() => {
-        if (messagesEndRef.current) {
-            messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-        }
-    }, 100); // slight delay ensures rendering is done
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            if (messagesEndRef.current) {
+                messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+            }
+        }, 100); // slight delay ensures rendering is done
 
-    return () => clearTimeout(timer);
-}, [messages]);
+        return () => clearTimeout(timer);
+    }, [messages]);
+
+
+    const submitMessageFunc = (msg: string) => {
+        if (!userData || !selectedChatUser) return;
+
+        const newMessage = {
+            senderId: userData._id,
+            receiverId: selectedChatUser._id,
+            message: msg,
+        };
+
+        if (socket.connected) {
+            socket.emit("sendMessage", newMessage);
+            addMessage({ ...newMessage }); // optimistic UI
+        }
+    };
+    useEffect(() => {
+        if (!socket) return;
+
+        const handleIncomingMessage = (msg: any) => {
+            addMessage(msg);
+        };
+
+        socket.on("receiveMessage", handleIncomingMessage);
+
+        return () => {
+            socket.off("receiveMessage", handleIncomingMessage);
+        };
+    }, []);
+
+
 
     return <>
         {selectedChatUser ?
 
             <div>
                 {/* Header */}
-                <div className="py-2 px-3 flex flex-row justify-between items-center ">
+                <div className="py-10 px-3 flex flex-row justify-between items-center  ">
                     <div className="flex items-center">
                         <div>
                             <img className="w-10 h-10 rounded-full" src="https://darrenjameseeley.files.wordpress.com/2014/09/expendables3.jpeg" />
@@ -134,7 +191,7 @@ const FriendRightBox = ({ selectedChatUser }: any) => {
 
 
                 {/* Input */}
-                <Input receiverId={selectedChatUser?._id} />
+                <Input submitMessageFunc={submitMessageFunc} receiverId={selectedChatUser?._id} />
             </div>
             : <>
 

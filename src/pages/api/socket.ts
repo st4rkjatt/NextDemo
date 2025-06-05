@@ -14,6 +14,7 @@ export interface NextApiResponseSocketIO extends NextApiResponse {
     };
   };
 }
+const userSocketMap = new Map(); // Maps user IDs to socket IDs
 
 const socket = (_: NextApiRequest, res: NextApiResponseSocketIO) => {
   console.log('request come in backend')
@@ -23,33 +24,46 @@ const socket = (_: NextApiRequest, res: NextApiResponseSocketIO) => {
     });
     console.log('socket init')
     io.on("connection", (socket) => {
-      console.log(`Connected: ${socket.id}`);
+      console.log(`Socket connected ${socket.id}`);
       hardcodedDatabaseServerStats[socket.id] = 0;
 
       socket.on("disconnect", () => {
-        console.log(`Disconnected: ${socket.id}`);
+        // Remove the user from the map on disconnect
+        const entries = userSocketMap.entries();
+        for (let [userId, socketId] of entries) {
+          if (socketId === socket.id) {
+            userSocketMap.delete(userId);
+            break;
+          }
+        }
+        console.log(`User disconnected: ${socket.id}`);
       });
 
-      // custom 'get-stats' event
-      socket.on("get-stats", () => {
-        console.log(`Requested stats: ${socket.id}`);
-        socket.emit("update-stats", hardcodedDatabaseServerStats);
+      //  ************************** custom 'sendMessage' event***************************
+      socket.on("registerUser", ({ userId }) => {
+        userSocketMap.set(userId, socket.id)
+        console.log(`Registered user ${userId} with socket ${socket.id}`);
+      })
+
+
+      socket.on("sendMessage", ({ senderId, receiverId, message }) => {
+        const data = {
+          senderId,
+          receiverId,
+          message
+        }
+        console.log(data, 'send data')
+
+        const recipientSocketId = userSocketMap.get(receiverId)
+        console.log(recipientSocketId, 'recipientSocket?')
+
+        if (recipientSocketId) {
+          io.to(recipientSocketId).emit("receiveMessage", data);
+        } else {
+          console.log("Recipient not connected");
+        }
       });
 
-      // custom 'update' event
-      socket.on("update", (val: UpdateIndicator) => {
-        console.log(`Updated stats - ${val}: ${socket.id}`);
-
-        hardcodedDatabaseServerStats[socket.id] =
-          hardcodedDatabaseServerStats[socket.id] +
-          (val === "increment" ? 1 : -1);
-
-        // update all client stats
-        io.emit("update-stats", hardcodedDatabaseServerStats);
-
-        // inform all clients except the emitter that they triggered an update
-        socket.broadcast.emit("stats-recently-updated-by", socket.id);
-      });
     });
 
     // we can attach this to the response object to expose it to any other

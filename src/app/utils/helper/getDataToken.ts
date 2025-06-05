@@ -10,7 +10,7 @@ export async function getDataToken(request: NextRequest) {
 
         const decodedToken = await jwt.verify(token, 'st4rk');
 
-        console.log("Decoded Token:", decodedToken);
+  
         if (!decodedToken) {
             throw new Error("Invalid token");
         }

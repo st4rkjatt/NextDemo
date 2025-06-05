@@ -1,51 +1,53 @@
 import { useEffect, useState } from "react";
 import { Socket } from "socket.io-client";
 
-/**
- * Due to the socket object depending on events triggering from the socket.on()
- * event emitter, this is not a native react implementation and therefore does
- * not force the react component to re-render
- *
- * By leveraging stateful hooks we can control when a react component will
- * trigger a re-render
- *
- * Note: The states maintained by this hook could have also just been
- * states living inside the values of SocketContext.Provider but this demo
- * was intended to represent a few ways to tackle all this abstractly using both
- * hooks and context providers
- */
 const useSocket = (socket: Socket | any) => {
   const [socketId, setSocketId] = useState<string | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (socket) {
-      socket.on("connect", () => {
-        setSocketId(socket.id);
-        setIsConnected(true);
-      });
+    if (!socket) return;
 
-      socket.on("error", (error:any) => {
-        setError(error);
-        console.error("Something went wrong and the socket errored!", error);
-      });
+    const handleConnect = () => {
+      console.log("✅ Connected:", socket.id);
+      setSocketId(socket.id);
+      setIsConnected(true);
+    };
 
-      // any additional common socket.on() events can be placed here with
-      // a controlled exposed state using setState; I would not put custom
-      // events inside this hook as it's purpose is mostly for connection state
-      // react lifecycle sync and error handling
-    } else {
-      setSocketId(null);
+    const handleDisconnect = () => {
+      console.log("🚫 Disconnected");
       setIsConnected(false);
-      setError(null);
-    }
-  }, [socket]);
+      setSocketId(null);
+    };
+
+    const handleError = (err: any) => {
+      console.error("❌ Socket error:", err);
+      setError(err);
+    };
+
+    const handleReceiveMessage = (data: any) => {
+      console.log("📩 Message received:", data);
+      // You can set state or update UI here
+    };
+
+    socket.on("connect", handleConnect);
+    socket.on("disconnect", handleDisconnect);
+    socket.on("error", handleError);
+    socket.on("receiveMessage", handleReceiveMessage);
+
+    return () => {
+      socket.off("connect", handleConnect);
+      socket.off("disconnect", handleDisconnect);
+      socket.off("error", handleError);
+      socket.off("receiveMessage", handleReceiveMessage);
+    };
+  }, [socket]); // Depend on socket object itself
 
   return {
     socketId,
     isConnected,
-    error
+    error,
   };
 };
 

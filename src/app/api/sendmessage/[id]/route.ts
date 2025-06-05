@@ -1,4 +1,4 @@
-import { getDataToken } from "@/app/helpers/getDataToken";
+import { getDataToken } from "@/app/utils/helper/getDataToken";
 import User from "@/app/models/userModel";
 import { NextRequest, NextResponse } from "next/server";
 import { connect } from "@/app/dbConfig/dbConfig";
@@ -19,14 +19,14 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
         const receiverId = id
         const message = await request.json();
 
-        console.log(senderId, receiverId, message, 'send, receiver,message')
+        // console.log(senderId, receiverId, message, 'send, receiver,message')
 
         const chatExists = await ConversationModel.findOne({
             participants: { $all: [senderId, receiverId] }
 
         })
 
-        console.log(chatExists, 'chatexists')
+        // console.log(chatExists, 'chatexists')
 
 
         const sender = await User.findById(senderId).select("-password");
@@ -40,7 +40,7 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
             const conversation = await ConversationModel.create({
                 participants: [senderId, receiverId]
             })
-            console.log(conversation, 'conversation');
+            // console.log(conversation, 'conversation');
 
             const createMessage = await MessageModel.create({
                 senderId: senderId,
@@ -48,7 +48,7 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
                 message: message
             })
 
-            console.log(createMessage, 'createMessage');
+            // console.log(createMessage, 'createMessage');
 
             conversation.messages.push(createMessage._id)
 
