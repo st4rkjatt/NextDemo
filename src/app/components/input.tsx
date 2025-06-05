@@ -2,8 +2,13 @@
 
 import { useState } from "react"
 
-const Input = ({ receiverId, submitMessageFunc }: any) => {
-    const [message, setMessage] = useState<string>()
+interface InputProps {
+    receiverId: string;
+    submitMessageFunc: (message: string) => void;
+}
+
+const Input = ({ receiverId, submitMessageFunc }: InputProps) => {
+    const [message, setMessage] = useState<string>("")
     const [loading, setLoading] = useState<boolean>()
 
     const handleSubmit = (e: any) => {
@@ -12,7 +17,7 @@ const Input = ({ receiverId, submitMessageFunc }: any) => {
         submitMessageFunc(message)
     }
 
-    const sendMessage = async (formData: any) => {
+    const sendMessage = async (message:string) => {
         try {
             setLoading(true);
             const response = await fetch(`/api/sendmessage/${receiverId}`, {
@@ -22,8 +27,8 @@ const Input = ({ receiverId, submitMessageFunc }: any) => {
                 },
                 body: JSON.stringify(message)
             });
-            const data = await response.json();
-            // console.log(data, 'data')
+            await response.json();
+            // // console.log(data, 'data')
 
         } catch (error) {
             console.error('Error signing up user:', error);
@@ -58,7 +63,7 @@ const Input = ({ receiverId, submitMessageFunc }: any) => {
                     </svg>
 
                 </button>
-                
+
             </form>
         </div>
 

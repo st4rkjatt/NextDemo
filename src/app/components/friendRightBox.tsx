@@ -6,7 +6,13 @@ import socket from "../utils/helper/socketGlobal"
 import { useChatStore } from "@/stores/store"
 
 
-const FriendRightBox = ({ selectedChatUser }: any) => {
+interface ChatUser {
+    _id: string;
+    fullName?: string;
+   
+}
+
+const FriendRightBox = ({ selectedChatUser }: { selectedChatUser: ChatUser | null }) => {
 
     const [userData, setUserData] = useState<any>()
     const { messages, setMessages, addMessage } = useChatStore();
@@ -105,7 +111,9 @@ const FriendRightBox = ({ selectedChatUser }: any) => {
                         </div>
                         <div className="ml-4">
                             <p className="font-bold">
-                                {selectedChatUser?.fullName?.charAt(0)?.toUpperCase() + selectedChatUser?.fullName?.slice(1)}
+                                {selectedChatUser?.fullName
+                                    ? selectedChatUser.fullName.charAt(0).toUpperCase() + selectedChatUser.fullName.slice(1)
+                                    : ""}
                             </p>
                         </div>
                     </div>

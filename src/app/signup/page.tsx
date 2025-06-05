@@ -14,6 +14,13 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link';
 import InteractiveCanvas from '../components/intractviceCanvas';
 import { ToastContainer, toast } from 'react-toastify';
+
+type SignupForm = {
+    fullName: string;
+    email: string;
+    mobile: string;
+    password: string;
+}
 const PokemonSignupForm = () => {
     const blackLineRef = useRef<HTMLDivElement>(null);
     const ballRef = useRef<HTMLDivElement>(null);
@@ -103,7 +110,8 @@ const PokemonSignupForm = () => {
     }, []);
 
     const [loading, setLoading] = useState(false);
-    const [form, setForm] = useState({
+    ;
+    const [form, setForm] = useState<SignupForm>({
         fullName: '',
         email: '',
         mobile: '',
@@ -160,7 +168,7 @@ const PokemonSignupForm = () => {
 
     }
 
-    const signupUser = async (formData: any) => {
+    const signupUser = async (formData: SignupForm) => {
         try {
             setLoading(true);
             const response = await fetch('/api/signup', {

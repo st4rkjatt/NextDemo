@@ -1,7 +1,13 @@
 import { useEffect, useState } from "react";
 import { Socket } from "socket.io-client";
 
-const useSocket = (socket: Socket | any) => {
+type UseSocketReturn = {
+  socketId: string | null;
+  isConnected: boolean;
+  error: any;
+};
+
+const useSocket = (socket: Socket | any): UseSocketReturn => {
   const [socketId, setSocketId] = useState<string | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [error, setError] = useState(null);

@@ -2,7 +2,11 @@
 
 import { useEffect, useState } from "react"
 
-const FrindLeftBox = ({ setSelectedChatUser }: any) => {
+type FriendLeftBoxProps = {
+    setSelectedChatUser: (user: any) => void;
+};
+
+const FrindLeftBox = ({ setSelectedChatUser }: FriendLeftBoxProps) => {
     const [userData, setUserData] = useState<any>()
     const [allUsers, setAllUsers] = useState<any>()
 

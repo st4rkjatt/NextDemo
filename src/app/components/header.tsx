@@ -7,7 +7,7 @@ import Link from 'next/link';
 const Header: React.FC = () => {
     const [loading, setLoading] = React.useState(false);
     const router = useRouter();
-    const handleOut = async (formData: any) => {
+    const handleOut = async () => {
         try {
             setLoading(true);
             const response = await fetch('api/logout', {

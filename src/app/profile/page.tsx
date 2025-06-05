@@ -200,8 +200,8 @@ export default function Home() {
             // Cursor animation
             gsap.set(".cursor", { force3D: true });
             document.addEventListener("mousemove", (e) => {
-                let x = e.clientX;
-                let y = e.clientY;
+                const x = e.clientX;
+                const y = e.clientY;
 
                 gsap.to(".cursor", {
                     x: x - 16,
@@ -226,7 +226,7 @@ export default function Home() {
                 });
             });
 
-            let hoverCursors = document.querySelectorAll('[data-cursor="hover"]');
+            const hoverCursors = document.querySelectorAll('[data-cursor="hover"]');
 
             hoverCursors.forEach(function (cursor) {
                 cursor.addEventListener("mouseenter", () => {
@@ -282,7 +282,7 @@ export default function Home() {
     );
 }
 
-const IntroSection = ({data}:any) => {
+const IntroSection = ({ data }: { data: UserData | null }) => {
     return <>
         <section className="section section--intro">
             <img

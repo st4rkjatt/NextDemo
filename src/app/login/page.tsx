@@ -12,6 +12,10 @@ import Link from 'next/link';
 import InteractiveCanvas from '../components/intractviceCanvas';
 import { ToastContainer, toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
+type LoginForm = {
+    email: string;
+    password: string;
+};
 const PokemonLoginForm = () => {
     const blackLineRef = useRef<HTMLDivElement>(null);
     const ballRef = useRef<HTMLDivElement>(null);
@@ -101,10 +105,12 @@ const PokemonLoginForm = () => {
     }, []);
     const router = useRouter();
     const [loading, setLoading] = useState(false);
-    const [form, setForm] = useState({
+
+
+    const [form, setForm] = useState<LoginForm>({
         email: '',
         password: ''
-    })
+    });
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -121,7 +127,7 @@ const PokemonLoginForm = () => {
 
     }
 
-    const loginUser = async (formData: any) => {
+    const loginUser = async (formData: LoginForm) => {
         try {
             setLoading(true);
             const response = await fetch('/api/login', {
@@ -135,7 +141,7 @@ const PokemonLoginForm = () => {
             // if (!response.ok) {
             //     throw new Error('Network response was not ok');
             // }
-          
+
             const data = await response.json();
             if (!data.status) {
                 toast.error(data.message);
