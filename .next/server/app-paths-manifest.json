@@ -1,0 +1,10 @@
+{
+  "/_not-found/page": "app/_not-found/page.js",
+  "/api/allusers/route": "app/api/allusers/route.js",
+  "/api/getconversation/[id]/route": "app/api/getconversation/[id]/route.js",
+  "/api/me/route": "app/api/me/route.js",
+  "/api/sendmessage/[id]/route": "app/api/sendmessage/[id]/route.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/friend/page": "app/friend/page.js",
+  "/profile/page": "app/profile/page.js"
+}
