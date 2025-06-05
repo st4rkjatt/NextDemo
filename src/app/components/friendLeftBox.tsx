@@ -72,14 +72,14 @@ const FrindLeftBox = ({ setSelectedChatUser }: FriendLeftBoxProps) => {
 
         {/* Search */}
         <div className="px-2 ">
-            <input type="text" id="success" className="bg-green-50 border border-green-500 text-green-900 dark:text-green-400 placeholder-green-700 dark:placeholder-green-500 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-green-500" placeholder="Search or start new chat" />
+            <input type="text" id="" className="bg-green-50 border border-green-500 text-green-900 dark:text-green-400 placeholder-green-700 dark:placeholder-green-500 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-green-500" placeholder="Search or start new chat" />
         </div>
 
         {/* Contacts */}
-        <div className=" flex-1 overflow-auto ">
+        <div className=" flex-1 overflow-auto mt-2">
 
             {allUsers?.map((user: AllUserType) => {
-                return <div key={user._id} className="px-3 flex items-center bg-grey-light cursor-pointer border-b border-grey hover:bg-gray-500 hover:shadow-md" onClick={() => setSelectedChatUser(user)}>
+                return <div key={user._id} className="px-3 flex items-center bg-grey-light cursor-pointer border-b rounded border-green-400 hover:bg-green-100 hover:shadow-md" onClick={() => setSelectedChatUser(user)}>
                     <div>
                         <img className="h-12 w-12 rounded-full"
                             src="https://darrenjameseeley.files.wordpress.com/2014/09/expendables3.jpeg" />

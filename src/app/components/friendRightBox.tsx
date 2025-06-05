@@ -89,8 +89,8 @@ const FriendRightBox = ({ selectedChatUser }: { selectedChatUser: ChatUser | nul
         };
 
         if (socket.connected) {
-            socket.emit("sendMessage", newMessage);
             addMessage({ ...newMessage }); // optimistic UI
+            socket.emit("sendMessage", newMessage);
         }
     };
     useEffect(() => {
