@@ -100,7 +100,7 @@ const FriendRightBox = ({ selectedChatUser }: any) => {
 
             <div>
                 {/* Header */}
-                <div className="py-10 px-3 flex flex-row justify-between items-center  ">
+                <div className="py-2 px-3 flex flex-row justify-between items-center  ">
                     <div className="flex items-center">
                         <div>
                             <img className="w-10 h-10 rounded-full" src="https://darrenjameseeley.files.wordpress.com/2014/09/expendables3.jpeg" />

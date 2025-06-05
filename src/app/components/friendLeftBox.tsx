@@ -60,8 +60,8 @@ const FrindLeftBox = ({ setSelectedChatUser }: any) => {
         </div>
 
         {/* Search */}
-        <div className="py-6 px-2">
-            <input type="text" className="w-full px-2 py-2 text-sm" placeholder="Search or start new chat" />
+        <div className="px-2 ">
+            <input type="text" id="success" className="bg-green-50 border border-green-500 text-green-900 dark:text-green-400 placeholder-green-700 dark:placeholder-green-500 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-green-500" placeholder="Search or start new chat" />
         </div>
 
         {/* Contacts */}

@@ -25,6 +25,9 @@
   .border2 {
     @apply border-4 border-red-600;
   }
+  .background1{
+    @apply bg-amber-200
+  }
 
 }
 

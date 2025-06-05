@@ -10,14 +10,12 @@ export const friendPage = () => {
 
     return <div>
         <Header />
-        <div className="w-full h-28" style={{ backgroundColor: "#449388" }}></div>
-
-        <div className="container mx-auto" style={{ marginTop: -130 }}>
-            <div className="py-4 h-screen">
-                <div className="flex  rounded  h-full">
+  
+            <div className=" h-[88vh]">
+                <div className="flex  rounded shadow-lg h-full">
 
                     {/* Left */}
-                    <div className="w-1/3  rounded flex flex-col">
+                    <div className="w-1/3 shadow rounded  flex flex-col">
                         <FrindLeftBox setSelectedChatUser={setSelectedChatUser} />
                     </div>
 
@@ -27,7 +25,7 @@ export const friendPage = () => {
                     </div>
 
                 </div>
-            </div>
+            
         </div>
     </div>
 }
