@@ -7,15 +7,15 @@ import MessageModel from "@/app/models/messageModel";
 
 connect();
 
-export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
+export async function POST(request: NextRequest ) {
     try {
         const senderId = await getDataToken(request);
 
         if (!senderId) {
             return NextResponse.json({ message: "Unauthorized", status: false }, { status: 401 });
         }
-        const { id } = await params;
-
+        const url = new URL(request.url);
+        const id = url.pathname.split('/').pop();
         const receiverId = id
         const message = await request.json();
 

@@ -4,29 +4,28 @@ import { connect } from "@/app/dbConfig/dbConfig";
 import ConversationModel from "@/app/models/conversationModel";
 
 connect();
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest) {
     try {
-
         const senderId = await getDataToken(request);
 
         if (!senderId) {
             return NextResponse.json({ message: "Unauthorized", status: false }, { status: 401 });
         }
-        const { id } = await params;
-        const receiverId = id
+
+        const url = new URL(request.url);
+        const id = url.pathname.split('/').pop();
+        const receiverId = id;
 
         const conversation = await ConversationModel.findOne({
             participants: { $all: [senderId, receiverId] }
-        }).populate({ path: 'messages' })
-     
+        }).populate({ path: 'messages' });
+
         if (!conversation) {
             return NextResponse.json({ message: "Conversation not found", status: true, result: [] }, { status: 200 });
-
         }
         // console.log(conversation, 'coversation')
 
         return NextResponse.json({ message: "Conversation  found", status: true, result: conversation.messages }, { status: 200 });
-
 
     } catch (error) {
         console.error("Error fetching user data:", error);
