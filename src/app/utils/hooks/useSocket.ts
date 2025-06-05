@@ -4,20 +4,20 @@ import { Socket } from "socket.io-client";
 type UseSocketReturn = {
   socketId: string | null;
   isConnected: boolean;
-  error: any;
+  error: unknown;
 };
 
-const useSocket = (socket: Socket | any): UseSocketReturn => {
+const useSocket = (socket: Socket | null): UseSocketReturn => {
   const [socketId, setSocketId] = useState<string | null>(null);
   const [isConnected, setIsConnected] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<unknown>(null);
 
   useEffect(() => {
     if (!socket) return;
 
     const handleConnect = () => {
       console.log("✅ Connected:", socket.id);
-      setSocketId(socket.id);
+      setSocketId(socket.id ?? null);
       setIsConnected(true);
     };
 
@@ -27,12 +27,12 @@ const useSocket = (socket: Socket | any): UseSocketReturn => {
       setSocketId(null);
     };
 
-    const handleError = (err: any) => {
+    const handleError = (err: unknown) => {
       console.error("❌ Socket error:", err);
       setError(err);
     };
 
-    const handleReceiveMessage = (data: any) => {
+    const handleReceiveMessage = (data: unknown) => {
       console.log("📩 Message received:", data);
       // You can set state or update UI here
     };

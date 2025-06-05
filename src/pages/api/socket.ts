@@ -66,7 +66,7 @@ const socket = (_: NextApiRequest, res: NextApiResponseSocketIO) => {
 
     });
 
-    // we can attach this to the response object to expose it to any other
+    // we can attach this to the response object to expose it to  other
     // /pages/api endpoint that has access to the response
     res.socket.server.io = io;
   }

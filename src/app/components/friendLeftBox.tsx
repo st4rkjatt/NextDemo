@@ -79,7 +79,7 @@ const FrindLeftBox = ({ setSelectedChatUser }: FriendLeftBoxProps) => {
         <div className=" flex-1 overflow-auto ">
 
             {allUsers?.map((user: AllUserType) => {
-                return <div className="px-3 flex items-center bg-grey-light cursor-pointer border-b border-grey hover:bg-gray-500 hover:shadow-md" onClick={() => setSelectedChatUser(user)}>
+                return <div key={user._id} className="px-3 flex items-center bg-grey-light cursor-pointer border-b border-grey hover:bg-gray-500 hover:shadow-md" onClick={() => setSelectedChatUser(user)}>
                     <div>
                         <img className="h-12 w-12 rounded-full"
                             src="https://darrenjameseeley.files.wordpress.com/2014/09/expendables3.jpeg" />
