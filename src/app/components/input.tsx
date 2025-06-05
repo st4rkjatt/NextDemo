@@ -1,8 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import useSocket from "../utils/hooks/useSocket";
-import socket from "../utils/helper/socketGlobal";
 
 const Input = ({ receiverId, submitMessageFunc }: any) => {
     const [message, setMessage] = useState<string>()

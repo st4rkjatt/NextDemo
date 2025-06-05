@@ -1,7 +1,6 @@
 "use client";
 import React from 'react';
 import { useRouter } from 'next/navigation';
-import AnimatedButton from './button';
 import { ToastContainer, toast } from 'react-toastify';
 import Link from 'next/link';
 

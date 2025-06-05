@@ -3,10 +3,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import React from 'react';
-import { AiOutlineUser } from 'react-icons/ai'
 import { BiLogInCircle } from 'react-icons/bi'
 import { AiOutlineMail } from 'react-icons/ai'
-import { BiPhoneCall } from 'react-icons/bi'
 import { RiLockPasswordLine } from 'react-icons/ri'
 import Head from 'next/head';
 import '../signup/signup.css'

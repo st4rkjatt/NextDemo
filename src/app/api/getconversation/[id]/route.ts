@@ -1,5 +1,4 @@
 import { getDataToken } from "@/app/utils/helper/getDataToken";
-import User from "@/app/models/userModel";
 import { NextRequest, NextResponse } from "next/server";
 import { connect } from "@/app/dbConfig/dbConfig";
 import ConversationModel from "@/app/models/conversationModel";
