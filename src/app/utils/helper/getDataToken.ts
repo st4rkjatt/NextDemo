@@ -12,7 +12,11 @@ export async function getDataToken(request: NextRequest) {
             throw new Error("No token found");
         }
 
-        const decodedToken = await jwt.verify(token, 'st4rk') as DecodedToken;
+        const secret = process.env.SECRET;
+        if (!secret) {
+            throw new Error('MONGO_URL environment variable is not defined');
+        }
+        const decodedToken = await jwt.verify(token, secret) as DecodedToken;
 
         if (!decodedToken) {
             throw new Error("Invalid token");
