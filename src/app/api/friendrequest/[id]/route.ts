@@ -35,7 +35,17 @@ export async function GET(
         }
 
         console.log(updatedConversation, 'updatedConversation')
-        return NextResponse.json({ message: "Friend Request sent.", status: true }, { status: 200 })
+
+        return NextResponse.json({
+            message: "Friend Request sent.", status: true, result: {
+                id: updatedConversation._id,
+                friendStatus: updatedConversation.friendStatus,
+                createdAt: updatedConversation.createdAt,
+                updatedAt: updatedConversation.updatedAt,
+                friendRequestBy:updatedConversation.friendRequestBy
+
+            }
+        }, { status: 200 })
 
 
     } catch (error) {

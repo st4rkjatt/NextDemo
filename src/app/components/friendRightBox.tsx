@@ -7,6 +7,7 @@ import { useChatStore } from "@/stores/store"
 import { acceptFriendRequest, friendRequest } from "../utils/helper/allApiCalls"
 import { enums } from "../utils/helper/enums"
 import FriendRequestButton from "./friendRequestButton"
+import { SendFriendRequestType } from "../utils/helper/types"
 
 
 interface ChatUser {
@@ -26,7 +27,7 @@ interface Message {
 const FriendRightBox = ({ selectedChatUser }: { selectedChatUser: ChatUser | null }) => {
 
     const [userData, setUserData] = useState<ChatUser | null>(null);
-    const { messages, setMessages, addMessage } = useChatStore();
+    const { messages, setMessages, addMessage, setFriendRequest,receiveFriendRequest } = useChatStore();
     const getUserData = async () => {
         try {
             const response = await fetch('/api/me');
@@ -101,23 +102,32 @@ const FriendRightBox = ({ selectedChatUser }: { selectedChatUser: ChatUser | nul
     useEffect(() => {
         if (!socket) return;
 
-        const handleIncomingMessage = (msg: Message) => {
-            // console.log(msg,'incommmmm')
-            addMessage(msg);
-        };
 
         socket.on("receiveMessage", handleIncomingMessage);
+        socket.on("receiveFriendRequest", handleReceiveFriendRequest);
+
 
         return () => {
             socket.off("receiveMessage", handleIncomingMessage);
         };
     }, []);
 
+    const handleReceiveFriendRequest = (data: SendFriendRequestType) => {
+        console.log(data,'ddddd')
+        receiveFriendRequest(data)
+    };
+    const handleIncomingMessage = (msg: Message) => {
+        // console.log(msg,'incommmmm')
+        addMessage(msg);
+    };
 
     const sendFriendRequest = async () => {
         if (userData && selectedChatUser) {
             const status = await friendRequest({ id: selectedChatUser?._id })
-            console.log('sss', status)
+            status.to = selectedChatUser._id
+            status.friendRequestBy = userData?._id
+            socket.emit("sendFriendRequest", status);
+            setFriendRequest(status)
 
         }
     }
@@ -127,8 +137,8 @@ const FriendRightBox = ({ selectedChatUser }: { selectedChatUser: ChatUser | nul
             console.log('sss', status)
         }
     }
-   
-    
+
+
     return <>
         {selectedChatUser ?
 
@@ -197,7 +207,7 @@ const FriendRightBox = ({ selectedChatUser }: { selectedChatUser: ChatUser | nul
 
                         {
                             messages?.friendStatus === enums.Accepted && messages?.data?.map((msg: Message) => {
-                           
+
                                 return <>
                                     {selectedChatUser?._id === msg.receiverId ? <>
                                         <div className="flex justify-end mb-2">

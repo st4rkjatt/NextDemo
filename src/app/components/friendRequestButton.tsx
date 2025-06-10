@@ -16,7 +16,7 @@ const FriendRequestButton: React.FC<FriendRequestButtonProps> = ({
     onSendRequest,
     onAcceptRequest,
 }) => {
-    
+    console.log(friendRequestBy?.toString(), currentUserId?.toString(), 'friendRequestBy?.toString() !== currentUserId?.toString()')
     switch (friendStatus) {
         case enums.Null:
             return (
@@ -29,7 +29,7 @@ const FriendRequestButton: React.FC<FriendRequestButtonProps> = ({
             );
 
         case enums.Pending:
-            console.log('pending ')
+            console.log('pending ', friendRequestBy?.toString(), currentUserId?.toString())
             if (friendRequestBy?.toString() !== currentUserId?.toString()) {
                 return (
                     <button
