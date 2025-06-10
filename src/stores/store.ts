@@ -10,13 +10,34 @@ interface Message {
 }
 
 interface ChatStore {
-  messages: Message[];
-  setMessages: (msgs: Message[]) => void;
+  messages: {
+    friendStatus: string;
+    data: Message[];
+    friendRequestBy?:string
+  };
+  setMessages: (msgs: Message[], friendStatus?: string) => void;
   addMessage: (msg: Message) => void;
 }
 
 export const useChatStore = create<ChatStore>((set) => ({
-  messages: [],
-  setMessages: (msgs) => set({ messages: msgs }),
-  addMessage: (msg) => set((state) => ({ messages: [...state.messages, msg] })),
+  messages: {
+    friendStatus: '',
+    data: []
+  },
+  setMessages: (msgs, friendStatus = '') => {
+    console.log(msgs, 'msmsms')
+    set({
+      messages: {
+        ...msgs
+      }
+    });
+    // set({ messages: { ...msg, } })
+  },
+  addMessage: (msg) =>
+    set((state) => ({
+      messages: {
+        ...state.messages,
+        data: [...state.messages.data, msg]
+      }
+    })),
 }));

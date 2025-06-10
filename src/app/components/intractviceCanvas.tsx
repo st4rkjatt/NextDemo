@@ -103,7 +103,7 @@ const InteractiveCanvas: React.FC = () => {
           ease: 'back.in(3)',
           stagger: {
             yoyo: true,
-            amount: 2.5,
+            amount: 1.5,
             grid: [chRef.current, cwRef.current],
             from: from,
             onComplete: function(targets: gsap.TweenTarget) {

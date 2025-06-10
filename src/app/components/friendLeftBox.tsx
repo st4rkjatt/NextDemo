@@ -9,11 +9,12 @@ type AllUserType = {
     mobile: string;
 };
 type FriendLeftBoxProps = {
+    selectedChatUser: AllUserType,
     setSelectedChatUser: (user: AllUserType) => void;
 };
 
 
-const FrindLeftBox = ({ setSelectedChatUser }: FriendLeftBoxProps) => {
+const FrindLeftBox = ({ setSelectedChatUser, selectedChatUser }: FriendLeftBoxProps) => {
     const [userData, setUserData] = useState<AllUserType | undefined>(undefined);
     const [allUsers, setAllUsers] = useState<AllUserType[] | undefined>(undefined);
 
@@ -39,7 +40,6 @@ const FrindLeftBox = ({ setSelectedChatUser }: FriendLeftBoxProps) => {
 
             const response = await fetch('api/me');
             const data = await response.json();
-
             setUserData(data.result);
         }
         catch (error) {
@@ -79,7 +79,7 @@ const FrindLeftBox = ({ setSelectedChatUser }: FriendLeftBoxProps) => {
         <div className=" flex-1 overflow-auto mt-2">
 
             {allUsers?.map((user: AllUserType) => {
-                return <div key={user._id} className="px-3 flex items-center bg-grey-light cursor-pointer border-b rounded border-green-400 hover:bg-green-100 hover:shadow-md" onClick={() => setSelectedChatUser(user)}>
+                return <div key={user._id} className={`px-3 flex items-center bg-grey-light cursor-pointer border-b rounded border-green-400 hover:bg-green-100 hover:shadow-md   ${selectedChatUser?._id === user?._id ? "bg-green-100" : ""}`} onClick={() => setSelectedChatUser(user)}>
                     <div>
                         <img className="h-12 w-12 rounded-full"
                             src="https://darrenjameseeley.files.wordpress.com/2014/09/expendables3.jpeg" />

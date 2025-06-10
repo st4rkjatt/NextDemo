@@ -4,6 +4,8 @@ import Input from "./input"
 import { useEffect, useRef, useState } from "react"
 import socket from "../utils/helper/socketGlobal"
 import { useChatStore } from "@/stores/store"
+import { acceptFriendRequest, friendRequest } from "../utils/helper/allApiCalls"
+import { enums } from "../utils/helper/enums"
 
 
 interface ChatUser {
@@ -12,11 +14,11 @@ interface ChatUser {
 
 }
 interface Message {
-  _id?: string;
-  senderId: string;
-  receiverId: string;
-  message: string;
-  createdAt?: string;
+    _id?: string;
+    senderId: string;
+    receiverId: string;
+    message: string;
+    createdAt?: string;
 }
 
 
@@ -24,12 +26,11 @@ const FriendRightBox = ({ selectedChatUser }: { selectedChatUser: ChatUser | nul
 
     const [userData, setUserData] = useState<ChatUser | null>(null);
     const { messages, setMessages, addMessage } = useChatStore();
-    console.log(messages, 'storeData')
+    const [friend, setFriend] = useState<any>(null)
     const getUserData = async () => {
         try {
             const response = await fetch('/api/me');
             const data = await response.json();
-            console.log(data, 'data');
             setUserData(data.result);
         }
         catch (error) {
@@ -37,14 +38,16 @@ const FriendRightBox = ({ selectedChatUser }: { selectedChatUser: ChatUser | nul
         }
     }
 
+
+
     useEffect(() => {
-        getUserData()
+        getUserData();
     }, [])
+
 
     useEffect(() => {
         if (selectedChatUser) {
             getConversation()
-
             if (!userData) return;
 
             const userDetails = {
@@ -52,6 +55,7 @@ const FriendRightBox = ({ selectedChatUser }: { selectedChatUser: ChatUser | nul
             };
 
             socket.emit('registerUser', userDetails);
+
         }
     }, [selectedChatUser])
 
@@ -59,7 +63,8 @@ const FriendRightBox = ({ selectedChatUser }: { selectedChatUser: ChatUser | nul
         try {
             const response = await fetch(`/api/getconversation/${selectedChatUser?._id}`);
             const data = await response.json();
-            setMessages(data.result || []);
+            // console.log(data.result, 'data.result')
+            setMessages(data.result);
         } catch (error) {
             console.error("Error fetching conversation:", error);
         }
@@ -108,7 +113,19 @@ const FriendRightBox = ({ selectedChatUser }: { selectedChatUser: ChatUser | nul
     }, []);
 
 
+    const sendFriendRequest = async () => {
+        if (userData && selectedChatUser) {
+            const status = await friendRequest({ id: selectedChatUser?._id })
+            console.log('sss', status)
 
+        }
+    }
+    const acceptRequest = async () => {
+        if (userData && selectedChatUser) {
+            const status = await acceptFriendRequest({ id: userData._id })
+            console.log('sss', status)
+        }
+    }
     return <>
         {selectedChatUser ?
 
@@ -144,27 +161,56 @@ const FriendRightBox = ({ selectedChatUser }: { selectedChatUser: ChatUser | nul
                 {/* Messages */}
                 <div className="flex-1 overflow-auto h-[70vh] " style={{ backgroundColor: "#DAD3CC" }}>
                     <div className="py-2 px-3">
+                        {
+                            messages?.friendStatus === enums.Accepted ? <>
 
-                        <div className="flex justify-center mb-2">
-                            <div className="rounded py-2 px-4" style={{ backgroundColor: "#DDECF2" }}>
-                                <p className="text-sm uppercase">
-                                    February 20, 2018
-                                </p>
+                                <div className="flex justify-center mb-2">
+                                    <div className="rounded py-2 px-4" style={{ backgroundColor: "#DDECF2" }}>
+                                        <p className="text-sm uppercase">
+                                            February 20, 2018
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div className="flex justify-center mb-4">
+                                    <div className="rounded py-2 px-4" style={{ backgroundColor: "#FCF4CB" }}>
+                                        <p className="text-xs">
+                                            Messages to this chat and calls are now secured with end-to-end encryption. Tap for more info.
+                                        </p>
+                                    </div>
+                                </div>
+                            </> : <div className="flex justify-center h-[60vh]  items-center">
+                                {messages?.friendStatus == enums.Null ?
+                                    <button className="bg-green-500 hover:bg-green-400 text-white font-bold py-2 px-4 border-b-4 border-green-700 hover:border-green-500 rounded cursor-pointer" onClick={sendFriendRequest}>
+                                        Send Friend Request
+                                    </button> : <>
+
+                                        {
+                                            messages?.friendRequestBy?.toString() !== userData?._id?.toString() ? <button className="bg-green-500 hover:bg-green-400 text-white font-bold py-2 px-4 border-b-4 border-green-700 hover:border-green-500 rounded cursor-pointer" onClick={acceptRequest}>
+                                                Accept Request
+                                            </button> :
+                                                <button
+                                                    className={`${messages?.friendStatus === "pending"
+                                                            ? "bg-gray-400 text-white font-bold py-2 px-4 border-b-4 border-gray-600 rounded cursor-not-allowed"
+                                                            : "bg-green-500 hover:bg-green-400 text-white font-bold py-2 px-4 border-b-4 border-green-700 hover:border-green-500 rounded"
+                                                        }`}
+                                                    disabled={messages?.friendStatus === "pending"}
+                                                >
+                                                    Your request is {messages?.friendStatus}
+                                                </button>
+                                        }
+
+
+                                        {console.log(messages?.friendRequestBy?.toString() === userData?._id?.toString(), messages?.friendRequestBy?.toString(), userData?._id?.toString(), '??')}
+                                    </>
+                                }
+
                             </div>
-                        </div>
-
-                        <div className="flex justify-center mb-4">
-                            <div className="rounded py-2 px-4" style={{ backgroundColor: "#FCF4CB" }}>
-                                <p className="text-xs">
-                                    Messages to this chat and calls are now secured with end-to-end encryption. Tap for more info.
-                                </p>
-                            </div>
-                        </div>
-
-
+                        }
 
                         {
-                            messages?.map((msg: Message) => {
+                            messages?.friendStatus === enums.Accepted && messages?.data?.map((msg: Message) => {
+                                { console.log(messages?.friendStatus === enums.Accepted && messages?.data, '?????') }
                                 return <>
                                     {selectedChatUser?._id === msg.receiverId ? <>
                                         <div className="flex justify-end mb-2">
@@ -207,7 +253,7 @@ const FriendRightBox = ({ selectedChatUser }: { selectedChatUser: ChatUser | nul
 
 
                 {/* Input */}
-                <Input submitMessageFunc={submitMessageFunc} receiverId={selectedChatUser?._id} />
+                {messages?.friendStatus === enums.Accepted && <Input submitMessageFunc={submitMessageFunc} receiverId={selectedChatUser?._id} />}
             </div>
             : <>
 

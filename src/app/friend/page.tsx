@@ -4,13 +4,9 @@ import { useState } from "react"
 import FriendLeftBox from "../components/friendLeftBox"
 import FriendRightBox from "../components/friendRightBox"
 import Header from "../components/header"
+import { AllUserType } from "../utils/helper/types"
 
-type AllUserType = {
-    _id: string;
-    fullName: string;
-    email: string;
-    mobile: string;
-};
+
 const FriendPage = () => {
     const [selectedChatUser, setSelectedChatUser] = useState<AllUserType | null>(null)
 
@@ -22,7 +18,7 @@ const FriendPage = () => {
 
                 {/* Left */}
                 <div className="w-1/3 shadow rounded  flex flex-col">
-                    <FriendLeftBox setSelectedChatUser={setSelectedChatUser} />
+                    <FriendLeftBox setSelectedChatUser={setSelectedChatUser} selectedChatUser={selectedChatUser} />
                 </div>
 
                 {/* Right */}
