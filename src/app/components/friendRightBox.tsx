@@ -6,6 +6,7 @@ import socket from "../utils/helper/socketGlobal"
 import { useChatStore } from "@/stores/store"
 import { acceptFriendRequest, friendRequest } from "../utils/helper/allApiCalls"
 import { enums } from "../utils/helper/enums"
+import FriendRequestButton from "./friendRequestButton"
 
 
 interface ChatUser {
@@ -26,7 +27,6 @@ const FriendRightBox = ({ selectedChatUser }: { selectedChatUser: ChatUser | nul
 
     const [userData, setUserData] = useState<ChatUser | null>(null);
     const { messages, setMessages, addMessage } = useChatStore();
-    const [friend, setFriend] = useState<any>(null)
     const getUserData = async () => {
         try {
             const response = await fetch('/api/me');
@@ -102,6 +102,7 @@ const FriendRightBox = ({ selectedChatUser }: { selectedChatUser: ChatUser | nul
         if (!socket) return;
 
         const handleIncomingMessage = (msg: Message) => {
+            // console.log(msg,'incommmmm')
             addMessage(msg);
         };
 
@@ -122,10 +123,12 @@ const FriendRightBox = ({ selectedChatUser }: { selectedChatUser: ChatUser | nul
     }
     const acceptRequest = async () => {
         if (userData && selectedChatUser) {
-            const status = await acceptFriendRequest({ id: userData._id })
+            const status = await acceptFriendRequest({ id: selectedChatUser._id })
             console.log('sss', status)
         }
     }
+   
+    
     return <>
         {selectedChatUser ?
 
@@ -180,37 +183,21 @@ const FriendRightBox = ({ selectedChatUser }: { selectedChatUser: ChatUser | nul
                                     </div>
                                 </div>
                             </> : <div className="flex justify-center h-[60vh]  items-center">
-                                {messages?.friendStatus == enums.Null ?
-                                    <button className="bg-green-500 hover:bg-green-400 text-white font-bold py-2 px-4 border-b-4 border-green-700 hover:border-green-500 rounded cursor-pointer" onClick={sendFriendRequest}>
-                                        Send Friend Request
-                                    </button> : <>
+                                <FriendRequestButton
+                                    friendStatus={messages?.friendStatus}
+                                    friendRequestBy={messages?.friendRequestBy}
+                                    currentUserId={userData?._id}
+                                    onSendRequest={sendFriendRequest}
+                                    onAcceptRequest={acceptRequest}
+                                />
 
-                                        {
-                                            messages?.friendRequestBy?.toString() !== userData?._id?.toString() ? <button className="bg-green-500 hover:bg-green-400 text-white font-bold py-2 px-4 border-b-4 border-green-700 hover:border-green-500 rounded cursor-pointer" onClick={acceptRequest}>
-                                                Accept Request
-                                            </button> :
-                                                <button
-                                                    className={`${messages?.friendStatus === "pending"
-                                                            ? "bg-gray-400 text-white font-bold py-2 px-4 border-b-4 border-gray-600 rounded cursor-not-allowed"
-                                                            : "bg-green-500 hover:bg-green-400 text-white font-bold py-2 px-4 border-b-4 border-green-700 hover:border-green-500 rounded"
-                                                        }`}
-                                                    disabled={messages?.friendStatus === "pending"}
-                                                >
-                                                    Your request is {messages?.friendStatus}
-                                                </button>
-                                        }
-
-
-                                        {console.log(messages?.friendRequestBy?.toString() === userData?._id?.toString(), messages?.friendRequestBy?.toString(), userData?._id?.toString(), '??')}
-                                    </>
-                                }
 
                             </div>
                         }
 
                         {
                             messages?.friendStatus === enums.Accepted && messages?.data?.map((msg: Message) => {
-                                { console.log(messages?.friendStatus === enums.Accepted && messages?.data, '?????') }
+                           
                                 return <>
                                     {selectedChatUser?._id === msg.receiverId ? <>
                                         <div className="flex justify-end mb-2">

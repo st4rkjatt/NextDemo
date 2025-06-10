@@ -8,36 +8,47 @@ interface Message {
   message: string;
   createdAt?: string;
 }
+interface MessageData {
+  data: Message[],
+  friendStatus: string,
+  friendRequestBy?: string
+}
 
-interface ChatStore {
-  messages: {
-    friendStatus: string;
-    data: Message[];
-    friendRequestBy?:string
-  };
-  setMessages: (msgs: Message[], friendStatus?: string) => void;
+interface ChatState {
+  messages: MessageData;
+}
+
+interface ChatStore extends ChatState {
+  setMessages: (msgs: MessageData) => void;
   addMessage: (msg: Message) => void;
 }
 
-export const useChatStore = create<ChatStore>((set) => ({
+export const useChatStore = create<ChatStore>((set, get) => ({
+  friendStatus: '',
   messages: {
+    data: [],
     friendStatus: '',
-    data: []
   },
-  setMessages: (msgs, friendStatus = '') => {
-    console.log(msgs, 'msmsms')
-    set({
-      messages: {
-        ...msgs
-      }
-    });
-    // set({ messages: { ...msg, } })
+
+  setMessages: (msgs) => {
+    const state = get();
+    // console.log('Current state in setMessages:', state);
+    // console.log('Current msgs:', msgs);
+    set({messages:msgs});
+    // console.log('Current state in setMessages:2', state);
   },
-  addMessage: (msg) =>
+
+
+
+  addMessage: (msg) => {
+    const state = get();
+    console.log(msg, 'msg');
+    // console.log('Current state in addMessage:', state.messages.data);
     set((state) => ({
       messages: {
         ...state.messages,
-        data: [...state.messages.data, msg]
-      }
-    })),
+        data: [...(state.messages?.data || []), msg],
+      },
+    }));
+  }
 }));

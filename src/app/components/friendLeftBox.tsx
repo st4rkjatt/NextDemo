@@ -9,7 +9,7 @@ type AllUserType = {
     mobile: string;
 };
 type FriendLeftBoxProps = {
-    selectedChatUser: AllUserType,
+    selectedChatUser: AllUserType | null,
     setSelectedChatUser: (user: AllUserType) => void;
 };
 
