@@ -1,5 +1,6 @@
 "use client"
 
+import moment from "moment";
 import { useEffect, useState } from "react"
 
 type AllUserType = {
@@ -7,6 +8,11 @@ type AllUserType = {
     fullName: string;
     email: string;
     mobile: string;
+    friendStatus?: string | null;
+    lastChat?: {
+        message: string,
+        createdAt: string
+    }
 };
 type FriendLeftBoxProps = {
     selectedChatUser: AllUserType | null,
@@ -26,7 +32,7 @@ const FrindLeftBox = ({ setSelectedChatUser, selectedChatUser }: FriendLeftBoxPr
     const getAllUsers = async () => {
         try {
 
-            const response = await fetch('api/allusers');
+            const response = await fetch('api/getFriends');
             const data = await response.json();
             console.log(data, 'data');
             setAllUsers(data.result);
@@ -79,24 +85,26 @@ const FrindLeftBox = ({ setSelectedChatUser, selectedChatUser }: FriendLeftBoxPr
         <div className=" flex-1 overflow-auto mt-2">
 
             {allUsers?.map((user: AllUserType) => {
-                return <div key={user._id} className={`px-3 flex items-center bg-grey-light cursor-pointer border-b rounded border-green-400 hover:bg-green-100 hover:shadow-md   ${selectedChatUser?._id === user?._id ? "bg-green-100" : ""}`} onClick={() => setSelectedChatUser(user)}>
+                return <div key={user._id} className={`px-3 py-3 flex items-center bg-grey-light cursor-pointer border-b rounded border-green-400 hover:bg-green-100 hover:shadow-md   ${selectedChatUser?._id === user?._id ? "bg-green-100" : ""}`} onClick={() => setSelectedChatUser(user)}>
                     <div>
                         <img className="h-12 w-12 rounded-full"
                             src="https://darrenjameseeley.files.wordpress.com/2014/09/expendables3.jpeg" />
                     </div>
-                    <div className="ml-4 flex-1 lighter py-4">
-                        <p className="font-bold ">
+                    <div className="ml-4 flex-1 lighter ">
+                        <p className="font-medium">
                             {user?.fullName?.charAt(0)?.toUpperCase() + user?.fullName?.slice(1)}
-
                         </p>
 
-                        <div className="flex items-bottom justify-between">
-                            <p className="text-grey-dark mt-1 text-sm">
-                                Get Andrés on this
-                            </p>
-                            <p className="text-grey-dark mt-1 text-sm">
-                                12:45 pm
-                            </p>
+                        <div className="">
+                            
+                            {user?.friendStatus && <div className="flex items-center justify-between">
+                                <p className="text-gray-600  text-sm">
+                                    {user?.lastChat?.message}
+                                </p>
+                                <p className="text-gray-500 text-end mt-1 text-[12px]">
+                                    {moment(user?.lastChat?.createdAt).format("HH:mm")}
+                                </p>
+                            </div>}
                         </div>
                     </div>
                 </div>

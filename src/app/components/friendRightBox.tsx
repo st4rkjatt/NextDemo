@@ -101,20 +101,15 @@ const FriendRightBox = ({ selectedChatUser }: { selectedChatUser: ChatUser | nul
     };
     useEffect(() => {
         if (!socket) return;
-
-
         socket.on("receiveMessage", handleIncomingMessage);
         socket.on("receiveFriendRequest", handleReceiveFriendRequest);
         socket.on("receiveAcceptFriendRequest", handleReceiveFriendRequestAccept);
-
-
         return () => {
             socket.off("receiveMessage", handleIncomingMessage);
         };
     }, []);
 
     const handleReceiveFriendRequestAccept = (data: SendFriendRequestType) => {
-        console.log(data,'accept friedn request receive')
          receiverFriendAccept(data)
     };
     const handleReceiveFriendRequest = (data: SendFriendRequestType) => {
@@ -142,8 +137,7 @@ const FriendRightBox = ({ selectedChatUser }: { selectedChatUser: ChatUser | nul
             socket.emit("acceptFriendRequest", status);
         }
     }
-    console.log(messages, 'messages');
-
+  
 
     return <>
         {selectedChatUser ?
@@ -212,9 +206,9 @@ const FriendRightBox = ({ selectedChatUser }: { selectedChatUser: ChatUser | nul
                         }
 
                         {
-                            messages?.friendStatus === enums.Accepted && messages?.data?.map((msg: Message) => {
+                            messages?.friendStatus === enums.Accepted && messages?.data?.map((msg: Message,i) => {
 
-                                return <>
+                                return <div key={i}>
                                     {selectedChatUser?._id === msg.receiverId ? <>
                                         <div className="flex justify-end mb-2">
                                             <div className="rounded py-2 px-3" style={{ backgroundColor: "#E2F7CB" }}>
@@ -239,11 +233,8 @@ const FriendRightBox = ({ selectedChatUser }: { selectedChatUser: ChatUser | nul
                                                 </p>
                                             </div>
                                         </div>
-
-
                                     }
-
-                                </>
+                                </div>
                             })
                         }
 
