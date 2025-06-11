@@ -33,8 +33,16 @@ export async function GET(
             return NextResponse.json({ message: "Conversation not found", status: false }, { status: 404 });
         }
 
-        return NextResponse.json({ message: "Friend Request accepted.", status: true }, { status: 200 })
+        return NextResponse.json({
+            message: "Friend Request sent.", status: true, result: {
+                id: updatedConversation._id,
+                friendStatus: updatedConversation.friendStatus,
+                createdAt: updatedConversation.createdAt,
+                updatedAt: updatedConversation.updatedAt,
+                friendRequestBy: updatedConversation.friendRequestBy
 
+            }
+        }, { status: 200 })
 
     } catch (error) {
         console.error("Error fetching friend request:", error);

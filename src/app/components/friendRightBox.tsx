@@ -27,7 +27,7 @@ interface Message {
 const FriendRightBox = ({ selectedChatUser }: { selectedChatUser: ChatUser | null }) => {
 
     const [userData, setUserData] = useState<ChatUser | null>(null);
-    const { messages, setMessages, addMessage, setFriendRequest,receiveFriendRequest } = useChatStore();
+    const { messages, setMessages, addMessage, setFriendRequest, receiveFriendRequest,receiverFriendAccept } = useChatStore();
     const getUserData = async () => {
         try {
             const response = await fetch('/api/me');
@@ -105,6 +105,7 @@ const FriendRightBox = ({ selectedChatUser }: { selectedChatUser: ChatUser | nul
 
         socket.on("receiveMessage", handleIncomingMessage);
         socket.on("receiveFriendRequest", handleReceiveFriendRequest);
+        socket.on("receiveAcceptFriendRequest", handleReceiveFriendRequestAccept);
 
 
         return () => {
@@ -112,12 +113,14 @@ const FriendRightBox = ({ selectedChatUser }: { selectedChatUser: ChatUser | nul
         };
     }, []);
 
+    const handleReceiveFriendRequestAccept = (data: SendFriendRequestType) => {
+        console.log(data,'accept friedn request receive')
+         receiverFriendAccept(data)
+    };
     const handleReceiveFriendRequest = (data: SendFriendRequestType) => {
-        console.log(data,'ddddd')
         receiveFriendRequest(data)
     };
     const handleIncomingMessage = (msg: Message) => {
-        // console.log(msg,'incommmmm')
         addMessage(msg);
     };
 
@@ -134,9 +137,12 @@ const FriendRightBox = ({ selectedChatUser }: { selectedChatUser: ChatUser | nul
     const acceptRequest = async () => {
         if (userData && selectedChatUser) {
             const status = await acceptFriendRequest({ id: selectedChatUser._id })
-            console.log('sss', status)
+            receiveFriendRequest(status)
+            status.to = selectedChatUser._id
+            socket.emit("acceptFriendRequest", status);
         }
     }
+    console.log(messages, 'messages');
 
 
     return <>

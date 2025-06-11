@@ -64,6 +64,27 @@ const socket = (_: NextApiRequest, res: NextApiResponseSocketIO) => {
         }
       });
 
+      socket.on("sendFriendRequest", (data) => {
+        console.log(data, 'data friedn re')
+        const recipientSocketId = userSocketMap.get(data.to)
+        console.log(recipientSocketId, 'recipientSocket?')
+        if (recipientSocketId) {
+          io.to(recipientSocketId).emit("receiveFriendRequest", data);
+        } else {
+          console.log("Recipient not connected");
+        }
+      })
+      socket.on("acceptFriendRequest", (data) => {
+        console.log(data, 'accept friedn')
+        const recipientSocketId = userSocketMap.get(data.to)
+        console.log(recipientSocketId, 'recipientSocket?')
+        if (recipientSocketId) {
+          io.to(recipientSocketId).emit("receiveAcceptFriendRequest", data);
+        } else {
+          console.log("Recipient not connected");
+        }
+      })
+
     });
 
     // we can attach this to the response object to expose it to  other

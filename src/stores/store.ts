@@ -7,6 +7,7 @@ interface ChatStore extends ChatState {
   addMessage: (msg: Message) => void;
   setFriendRequest: (data: SendFriendRequestType) => void;
   receiveFriendRequest: (data: SendFriendRequestType) => void;
+  receiverFriendAccept: (data: SendFriendRequestType) => void;
 }
 
 export const useChatStore = create<ChatStore>((set, get) => ({
@@ -14,6 +15,18 @@ export const useChatStore = create<ChatStore>((set, get) => ({
   messages: {
     data: [],
     friendStatus: '',
+  },
+  receiverFriendAccept(data) {
+    const state = get();
+    console.log('receiver accept request', state);
+    set((state) => ({
+      messages: {
+        ...state.messages,
+        friendStatus: data.friendStatus,
+        friendRequestBy: data.friendRequestBy
+      },
+    }));
+    // console.log('Current msgs:', msgs);
   },
   setFriendRequest(data) {
     // const state = get();
