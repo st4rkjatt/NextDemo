@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 6, "column": 0}, "map": {"version":3,"sources":[],"names":[],"mappings":"","debugId":null}},
-    {"offset": {"line": 60, "column": 0}, "map": {"version":3,"sources":["file:///C:/Users/St4rk/Desktop/learningAndDevelopment/demo/src/app/api/logout/route.ts"],"sourcesContent":["import { NextRequest } from \"next/server\";\r\nimport { NextResponse } from \"next/server\";\r\nexport async function GET(request: NextRequest) {\r\n    try {\r\n        // Clear the token cookie\r\n        const response = NextResponse.json({ message: \"User logged out successfully\", status: true }, { status: 200 });\r\n        response.cookies.set('token', '', {\r\n            httpOnly: true,\r\n            expires: new Date(), // Set expiration to the past to clear the cookie\r\n        });\r\n        return response;\r\n    } catch (error) {\r\n        console.error(\"Error during logout:\", error);\r\n        return NextResponse.json({ message: \"Internal Server Error\", status: false }, { status: 500 });\r\n    }\r\n\r\n\r\n}"],"names":[],"mappings":";;;AACA;;AACO,eAAe,IAAI,OAAoB;IAC1C,IAAI;QACA,yBAAyB;QACzB,MAAM,WAAW,gIAAA,CAAA,eAAY,CAAC,IAAI,CAAC;YAAE,SAAS;YAAgC,QAAQ;QAAK,GAAG;YAAE,QAAQ;QAAI;QAC5G,SAAS,OAAO,CAAC,GAAG,CAAC,SAAS,IAAI;YAC9B,UAAU;YACV,SAAS,IAAI;QACjB;QACA,OAAO;IACX,EAAE,OAAO,OAAO;QACZ,QAAQ,KAAK,CAAC,wBAAwB;QACtC,OAAO,gIAAA,CAAA,eAAY,CAAC,IAAI,CAAC;YAAE,SAAS;YAAyB,QAAQ;QAAM,GAAG;YAAE,QAAQ;QAAI;IAChG;AAGJ","debugId":null}}]
-}
