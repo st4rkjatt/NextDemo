@@ -22,8 +22,6 @@ type SignupForm = {
     password: string;
 }
 const PokemonSignupForm = () => {
-    const blackLineRef = useRef<HTMLDivElement>(null);
-    const ballRef = useRef<HTMLDivElement>(null);
     const mainFormRef = useRef<HTMLDivElement>(null);
     const topRef = useRef<HTMLDivElement>(null);
     const bottomRef = useRef<HTMLDivElement>(null);
@@ -42,29 +40,7 @@ const PokemonSignupForm = () => {
 
     useEffect(() => {
         const tl = gsap.timeline();
-
-        // Animation sequence
-        tl
-            .to(blackLineRef.current, { duration: 0.5, className: '+=red-circle' })
-            .to(blackLineRef.current, { duration: 0.5, className: '-=red-circle' })
-            .to(blackLineRef.current, { duration: 0.5, className: '+=red-circle' })
-            .to(blackLineRef.current, { duration: 0.5, className: '-=red-circle' })
-            .to(blackLineRef.current, { duration: 0.5, className: '+=red-circle' })
-            .to(blackLineRef.current, { duration: 0.5, className: '-=red-circle' })
-            .to(blackLineRef.current, { duration: 0.5, className: '+=red-circle' })
-            .to(blackLineRef.current, { duration: 0.5, className: '-=red-circle' })
-            .to(ballRef.current, { duration: 0.5, y: '-70%', ease: 'power4.out' })
-            .to(ballRef.current, { duration: 0.5, y: '-50%', ease: 'bounce.out' })
-            .to(ballRef.current, { duration: 0.5, y: '-85%', ease: 'power4.out' }, '+=0.5')
-            .to(ballRef.current, { duration: 0.5, y: '-50%', ease: 'bounce.out' })
-            .to(ballRef.current, { duration: 0.5, y: '-100%', ease: 'power4.out' }, '+=0.5')
-            .to(ballRef.current, {
-                duration: 0.5,
-                y: '-50%',
-                ease: 'bounce.out',
-                onComplete: toggleForm
-            });
-
+        toggleForm()
         function toggleForm() {
             if (mainFormRef.current) {
                 gsap.set(mainFormRef.current, { display: 'block' });
@@ -157,8 +133,6 @@ const PokemonSignupForm = () => {
             ? 'signup-roweerror'
             : 'signup-row';
 
-    console.log('getInputClass("fullName")', getInputClass("fullName"));
-    console.log('errors', errors);
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setForm((prevForm) => ({
@@ -219,9 +193,7 @@ const PokemonSignupForm = () => {
             <InteractiveCanvas />
 
             {/* Main Container */}
-            <div className="main-container" ref={ballRef}>
-                {/* Pokemon Ball Top Part */}
-                <div className="pokemon-top-part" ref={topRef}></div>
+            <div className="main-container">
 
                 {/* Main Forms */}
                 <div className="main-forms" ref={mainFormRef} style={{ display: 'none' }}>
@@ -296,11 +268,7 @@ const PokemonSignupForm = () => {
                     </div>
                 </div>
 
-                {/* Pokemon Ball Bottom Part */}
-                <div className="pokemon-bottom-part" ref={bottomRef}>
-                    <div className="white-part"></div>
-                    <div className="black-line" ref={blackLineRef}></div>
-                </div>
+
             </div>
         </>
     );

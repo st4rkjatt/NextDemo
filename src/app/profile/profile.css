@@ -3,13 +3,13 @@
   --gold: #f7c505;
   --yellow: #fbdc74;
   --skyblue: #0071fb;
-  --black: #524343;
+  --black: #f2f5eb;
+  --hero_title: #e7f0f3;
 }
 
 body {
-  background-color: var(--black);
-  background: linear-gradient(90deg, var(--black) 20px, transparent 1%) 50%, linear-gradient(var(--black) 20px, transparent 1%) 50%, #222;
-  /* background-size: 22px 22px; */
+  /* background-color: var(--black); */
+  /* background: linear-gradient(90deg, var(--black) 20px, transparent 1%) 50%, linear-gradient(var(--black) 20px, transparent 1%) 50%, #222; */
   background-attachment: fixed;
   color: #fff;
   font-family: 'Barlow Semi Condensed', sans-serif;
@@ -31,9 +31,16 @@ body {
   margin-top: 2rem;
 }
 
+.hero__title--1 {
+  color: var(--hero_title);
+  -webkit-text-stroke: 1px rgb(35, 145, 208);
+  margin-top: 0;
+  margin-bottom: 1rem;
+  mix-blend-mode: color-burn;
+}
 .hero__title--2 {
-  color: var(--black);
-  -webkit-text-stroke: 1px white;
+  color: var(--hero_title);
+  -webkit-text-stroke: 1px rgb(64, 208, 35);
   margin-top: 0;
   margin-bottom: 1rem;
   mix-blend-mode: color-burn;
@@ -45,6 +52,7 @@ body {
   font-weight: 300;
   opacity: 0.75;
   overflow: hidden;
+  
 }
 
 .hero__copy span {
@@ -131,6 +139,7 @@ body {
   font-weight: 300;
   text-align: left;
   line-height: 1.5;
+
 }
 
 .box .line {
@@ -163,16 +172,16 @@ body {
 
 .card-1 {
   background-color: var(--yellow);
-  background-image: url("https://images.unsplash.com/photo-1590845947376-2638caa89309?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80");
+  background-image: url("https://images.unsplash.com/photo-1605192704979-2bb15327c206?q=80&w=2160&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
 }
 .card-2 {
   background-color: var(--blue);
-  background-image: url("https://images.unsplash.com/photo-1535043205849-513fe27db33e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=80");
+  background-image: url("https://images.unsplash.com/photo-1615413250263-bb04cc0a3988?q=80&w=2574&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
 }
 
 .card-3 {
   background-color: var(--skyblue);
-  background-image: url("https://images.unsplash.com/photo-1580234797602-22c37b2a6230?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1347&q=80");
+  background-image: url("https://images.unsplash.com/photo-1599623560574-39d485900c95?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
 }
 
 .cross-1.scroll-end {
@@ -190,7 +199,7 @@ body {
   font-weight: 900;
   letter-spacing: -1vw;
   line-height: 1;
-  color: white;
+  color: rgb(123, 231, 255);
   text-transform: uppercase;
   pointer-events: none;
 }

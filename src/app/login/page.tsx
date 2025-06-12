@@ -40,19 +40,6 @@ const PokemonLoginForm = () => {
 
         // Animation sequence
         tl
-            .to(blackLineRef.current, { duration: 0.5, className: '+=red-circle' })
-            .to(blackLineRef.current, { duration: 0.5, className: '-=red-circle' })
-            .to(blackLineRef.current, { duration: 0.5, className: '+=red-circle' })
-            .to(blackLineRef.current, { duration: 0.5, className: '-=red-circle' })
-            .to(blackLineRef.current, { duration: 0.5, className: '+=red-circle' })
-            .to(blackLineRef.current, { duration: 0.5, className: '-=red-circle' })
-            .to(blackLineRef.current, { duration: 0.5, className: '+=red-circle' })
-            .to(blackLineRef.current, { duration: 0.5, className: '-=red-circle' })
-            .to(ballRef.current, { duration: 0.5, y: '-70%', ease: 'power4.out' })
-            .to(ballRef.current, { duration: 0.5, y: '-50%', ease: 'bounce.out' })
-            .to(ballRef.current, { duration: 0.5, y: '-85%', ease: 'power4.out' }, '+=0.5')
-            .to(ballRef.current, { duration: 0.5, y: '-50%', ease: 'bounce.out' })
-            .to(ballRef.current, { duration: 0.5, y: '-100%', ease: 'power4.out' }, '+=0.5')
             .to(ballRef.current, {
                 duration: 0.5,
                 y: '-50%',
@@ -176,9 +163,6 @@ const PokemonLoginForm = () => {
 
             {/* Main Container */}
             <div className="main-container" ref={ballRef}>
-                {/* Pokemon Ball Top Part */}
-                <div className="pokemon-top-part" ref={topRef}></div>
-
                 {/* Main Forms */}
                 <div className="main-forms" ref={mainFormRef} style={{ display: 'none' }}>
                     <div className="signup-form">
@@ -222,12 +206,6 @@ const PokemonLoginForm = () => {
                             </div>
                         </form>
                     </div>
-                </div>
-
-                {/* Pokemon Ball Bottom Part */}
-                <div className="pokemon-bottom-part" ref={bottomRef}>
-                    <div className="white-part"></div>
-                    <div className="black-line" ref={blackLineRef}></div>
                 </div>
             </div>
         </>

@@ -300,7 +300,7 @@ const IntroSection = ({ data }: { data: UserData | null }) => {
             <h3 className="hero__title hero__title--1">HI, I&#39;M {data?.fullName}</h3>
             <h3 className="hero__title hero__title--2">Mern Developer</h3>
 
-            <p className="hero__copy"><span>I&#39;m not the one in the photo but blue is essential</span></p>
+            {/* <p className="hero__copy text-gray-600"><span>I&#39;m not the one in the photo but blue is essential</span></p> */}
         </section>
     </>
 }
@@ -313,30 +313,20 @@ const FooterSection = () => (
             <TwitterIcon />
         </div>
 
-        <p className="footer__copy">
+        <p className="footer__copy text-gray-400">
             Lorem ipsum, dolor sit amet consectetur adipisicing elit. Facere animi impedit, esse sunt at
             exercitationem nostrum, accusamus veniam est commodi expedita, praesentium excepturi ut quidem illum incidunt
             officia.
         </p>
-
-        <a
-            href="https://twitter.com/ismamz"
-            className="footer__button"
-            data-cursor="hover"
-            target="_blank"
-            rel="noopener noreferrer"
-        >
-            Follow me on Twitter
-        </a>
     </section>
 
 )
 const WorksSection = () => (
     <section className="section section--works">
         <div className="cards">
-            <a href="https://unsplash.com/photos/IuF6G4b4XSI" className="card card-1" data-cursor="hover"></a>
-            <a href="https://unsplash.com/photos/AGf_KACMHJ8" className="card card-2" data-cursor="hover"></a>
-            <a href="https://unsplash.com/photos/IJyXoyGmiZY" className="card card-3" data-cursor="hover"></a>
+            <a  className="card card-1" data-cursor="hover"></a>
+            <a  className="card card-2" data-cursor="hover"></a>
+            <a  className="card card-3" data-cursor="hover"></a>
         </div>
 
         <CrossIcon className="cross-3" />
@@ -345,7 +335,7 @@ const WorksSection = () => (
 
 const TextSection = () => (
     <section className="section section--text">
-        <div className="box">
+        <div className=" box text-gray-400">
             Hi, I&#39;m St4rk, a Mern Developer. I love creating web applications that are not only functional but also visually appealing. My journey in web development has been exciting, and I&#39;m always eager to learn new technologies and improve my skills.
             <div className="line"></div>
         </div>
