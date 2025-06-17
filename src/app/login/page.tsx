@@ -12,6 +12,7 @@ import Link from 'next/link';
 import InteractiveCanvas from '../components/intractviceCanvas';
 import { ToastContainer, toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
+import { LuSatelliteDish } from 'react-icons/lu';
 type LoginForm = {
     email: string;
     password: string;
@@ -30,7 +31,7 @@ const PokemonLoginForm = () => {
     const setRowRef = (index: number) => (el: HTMLDivElement | null) => {
         rowRefs.current[index] = el;
     };
-
+LuSatelliteDish
     const setRemRef = (index: number) => (el: HTMLDivElement | null) => {
         remRefs.current[index] = el;
     };

@@ -64,7 +64,7 @@ const Header: React.FC = () => {
                                     </li>
 
                                     <li>
-                                        <a className="text-gray-500 transition hover:text-gray-500/75" href="#"> History </a>
+                                        <Link href={"/"} className="text-gray-500 transition hover:text-gray-500/75" > AI </Link>
                                     </li>
 
                                     <li>
