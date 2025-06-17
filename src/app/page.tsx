@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
@@ -51,20 +50,6 @@ export default function Home() {
       alert("Failed to generate image.");
     }
     setLoading(false);
-  };
-
-  const postToLinkedIn = async () => {
-    try {
-      const res = await axios.post("/api/postToLinkedIn", {
-        message: post,
-        imageUrl: imageUrl,
-        accessToken: "<your_access_token_here>",
-      });
-      alert("Posted successfully!");
-    } catch (err) {
-      console.error("Failed to post to LinkedIn", err);
-      alert("Post failed.");
-    }
   };
 
   const cleanText = (text: string) => {
