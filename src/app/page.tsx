@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import Header from "./components/header";
 
 declare global {
   interface Window {
@@ -34,7 +35,7 @@ export default function Home() {
     const response = await window.puter.ai.chat(
       `${prompt} in a ${tone} tone.${imageRef}`
     );
-    console.log(response,'response img')
+    console.log(response, 'response img')
     setPost(response.message?.content || response);
     setLoading(false);
   };
@@ -43,7 +44,7 @@ export default function Home() {
     setLoading(true);
     try {
       const result = await window.puter.ai.txt2img(prompt, false);
-       console.log(result,'result img')
+      console.log(result, 'result img')
       setImageUrl(result.url || "");
     } catch (err) {
       console.error("Image generation failed:", err);
@@ -61,6 +62,7 @@ export default function Home() {
 
   return (
     <>
+      <Header />
       <div className="p-4 max-w-[60%] mx-auto">
         <h1 className="text-2xl font-bold ">Ask anything</h1>
         {/* <h1 className="text-2xl font-bold ">LinkedIn Post Generator</h1> */}
