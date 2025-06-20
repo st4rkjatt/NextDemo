@@ -63,6 +63,20 @@ const socket = (_: NextApiRequest, res: NextApiResponseSocketIO) => {
           console.log("Recipient not connected");
         }
       });
+      socket.on("typing", ({ senderId, receiverId }) => {
+        const data = {
+          senderId,
+          receiverId,
+        }
+        const recipientSocketId = userSocketMap.get(receiverId)
+        console.log(recipientSocketId, 'typing?')
+
+        if (recipientSocketId) {
+          io.to(recipientSocketId).emit("receiveTyping", data);
+        } else {
+          console.log("Recipient not connected");
+        }
+      });
 
       socket.on("sendFriendRequest", (data) => {
         console.log(data, 'data friedn re')

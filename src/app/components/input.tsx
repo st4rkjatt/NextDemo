@@ -6,9 +6,10 @@ import Loader from "../utils/helper/Loader";
 interface InputProps {
     receiverId: string;
     submitMessageFunc: (message: string) => void;
+    handleTyping: () => void;
 }
 
-const Input = ({ receiverId, submitMessageFunc }: InputProps) => {
+const Input = ({ receiverId, submitMessageFunc, handleTyping }: InputProps) => {
     const [message, setMessage] = useState<string>("")
     const [loading, setLoading] = useState<boolean>()
 
@@ -43,6 +44,11 @@ const Input = ({ receiverId, submitMessageFunc }: InputProps) => {
 
     }
 
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { value } = e.target;
+        setMessage(value)
+        handleTyping()
+    }
     return <>
         <div className="border flex items-center">
 
@@ -52,7 +58,7 @@ const Input = ({ receiverId, submitMessageFunc }: InputProps) => {
                     type="text"
                     name="message"
                     value={message || ""}
-                    onChange={(e) => setMessage(e.target.value)}
+                    onChange={handleChange}
                     required
                     placeholder="Type your message..."
                 />
@@ -81,3 +87,4 @@ const Input = ({ receiverId, submitMessageFunc }: InputProps) => {
 
 
 export default Input
+

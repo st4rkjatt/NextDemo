@@ -23,6 +23,7 @@ type SignupForm = {
 }
 const PokemonSignupForm = () => {
     const mainFormRef = useRef<HTMLDivElement>(null);
+    const ballRef = useRef<HTMLDivElement>(null);
     const topRef = useRef<HTMLDivElement>(null);
     const bottomRef = useRef<HTMLDivElement>(null);
     const h1Ref = useRef<HTMLHeadingElement>(null);
@@ -40,6 +41,7 @@ const PokemonSignupForm = () => {
 
     useEffect(() => {
         const tl = gsap.timeline();
+
         toggleForm()
         function toggleForm() {
             if (mainFormRef.current) {

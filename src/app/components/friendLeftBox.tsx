@@ -60,7 +60,7 @@ const FrindLeftBox = ({ setSelectedChatUser, selectedChatUser }: FriendLeftBoxPr
         <div className="py-2 px-3  flex flex-row justify-between items-center">
             <div className="flex justify-center items-center">
                 <img className="w-10 h-10 rounded-full" src="https://darrenjameseeley.files.wordpress.com/2014/09/expendables3.jpeg" />
-                <h1 className="ps-2 font-bold">{userData?.fullName}</h1>
+                <h1 className="ps-2 font-bold text-black">{userData?.fullName}</h1>
             </div>
 
             <div className="flex ">
@@ -83,9 +83,9 @@ const FrindLeftBox = ({ setSelectedChatUser, selectedChatUser }: FriendLeftBoxPr
 
         {/* Contacts */}
         <div className=" flex-1 overflow-auto mt-2">
-
             {allUsers?.map((user: AllUserType) => {
-                return <div key={user._id} className={`px-3 py-3 flex items-center bg-grey-light cursor-pointer border-b rounded border-green-400 hover:bg-green-100 hover:shadow-md   ${selectedChatUser?._id === user?._id ? "bg-green-100" : ""}`} onClick={() => setSelectedChatUser(user)}>
+                return <div key={user._id} className={`px-3 py-3 flex items-center bg-grey-light cursor-pointer
+                 border-b rounded border-green-400 text-black hover:bg-green-100 hover:shadow-md   ${selectedChatUser?._id === user?._id ? "bg-green-100" : ""}`} onClick={() => setSelectedChatUser(user)}>
                     <div>
                         <img className="h-12 w-12 rounded-full"
                             src="https://darrenjameseeley.files.wordpress.com/2014/09/expendables3.jpeg" />

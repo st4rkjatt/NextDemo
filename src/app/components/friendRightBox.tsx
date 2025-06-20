@@ -23,11 +23,17 @@ interface Message {
     createdAt?: string;
 }
 
+interface TypingType {
+    senderId: string;
+    receiverId: string;
+}
+
 
 const FriendRightBox = ({ selectedChatUser }: { selectedChatUser: ChatUser | null }) => {
 
     const [userData, setUserData] = useState<ChatUser | null>(null);
-    const { messages, setMessages, addMessage, setFriendRequest, receiveFriendRequest,receiverFriendAccept } = useChatStore();
+    const [typing, setTyping] = useState<boolean>(false);
+    const { messages, setMessages, addMessage, setFriendRequest, receiveFriendRequest, receiverFriendAccept } = useChatStore();
     const getUserData = async () => {
         try {
             const response = await fetch('/api/me');
@@ -99,18 +105,10 @@ const FriendRightBox = ({ selectedChatUser }: { selectedChatUser: ChatUser | nul
             socket.emit("sendMessage", newMessage);
         }
     };
-    useEffect(() => {
-        if (!socket) return;
-        socket.on("receiveMessage", handleIncomingMessage);
-        socket.on("receiveFriendRequest", handleReceiveFriendRequest);
-        socket.on("receiveAcceptFriendRequest", handleReceiveFriendRequestAccept);
-        return () => {
-            socket.off("receiveMessage", handleIncomingMessage);
-        };
-    }, []);
+
 
     const handleReceiveFriendRequestAccept = (data: SendFriendRequestType) => {
-         receiverFriendAccept(data)
+        receiverFriendAccept(data)
     };
     const handleReceiveFriendRequest = (data: SendFriendRequestType) => {
         receiveFriendRequest(data)
@@ -137,8 +135,46 @@ const FriendRightBox = ({ selectedChatUser }: { selectedChatUser: ChatUser | nul
             socket.emit("acceptFriendRequest", status);
         }
     }
-  
 
+    useEffect(() => {
+        if (!socket) return;
+        socket.on("receiveMessage", handleIncomingMessage);
+        socket.on("receiveFriendRequest", handleReceiveFriendRequest);
+        socket.on("receiveAcceptFriendRequest", handleReceiveFriendRequestAccept);
+        socket.on("receiveTyping", handleReceivingTyping);
+        return () => {
+            socket.off("receiveMessage", handleIncomingMessage);
+            socket.off("receiveFriendRequest", handleReceiveFriendRequest);
+            socket.off("receiveAcceptFriendRequest", handleReceiveFriendRequestAccept);
+            socket.off("receiveTyping", handleReceivingTyping);
+        };
+    }, []);
+
+    const handleTyping = () => {
+        const newMessage = {
+            senderId: userData?._id,
+            receiverId: selectedChatUser?._id,
+        };
+
+        if (socket.connected) {
+            socket.emit("typing", newMessage);
+        }
+    }
+
+    const handleReceivingTyping = (data: TypingType) => {
+        console.log("Received typing data:", data);
+        console.log(selectedChatUser, 'data.receiverId === selectedChatUser?._id');
+        if (data.receiverId === selectedChatUser?._id) {
+            console.log("Receiving typing...", data);
+            setTyping(true);
+            setTimeout(() => {
+                setTyping(false);
+            }, 2000); // Clear typing after 2 seconds
+        }
+       
+    }
+console.log(typing, 'messages in friend right box')
+    
     return <>
         {selectedChatUser ?
 
@@ -172,7 +208,8 @@ const FriendRightBox = ({ selectedChatUser }: { selectedChatUser: ChatUser | nul
                 </div>
 
                 {/* Messages */}
-                <div className="flex-1 overflow-auto h-[70vh] " style={{ backgroundColor: "#DAD3CC" }}>
+                <div className="flex-1 overflow-auto h-[70vh] text-black " style={{ backgroundColor: "#DAD3CC" }}>
+
                     <div className="py-2 px-3">
                         {
                             messages?.friendStatus === enums.Accepted ? <>
@@ -206,7 +243,7 @@ const FriendRightBox = ({ selectedChatUser }: { selectedChatUser: ChatUser | nul
                         }
 
                         {
-                            messages?.friendStatus === enums.Accepted && messages?.data?.map((msg: Message,i) => {
+                            messages?.friendStatus === enums.Accepted && messages?.data?.map((msg: Message, i) => {
 
                                 return <div key={i}>
                                     {selectedChatUser?._id === msg.receiverId ? <>
@@ -215,24 +252,30 @@ const FriendRightBox = ({ selectedChatUser }: { selectedChatUser: ChatUser | nul
                                                 <p className="text-sm mt-1">
                                                     {msg?.message}
                                                 </p>
-                                                <p className="text-right text-xs text-grey-dark mt-1">
+                                                <p className="text-right text-xs mt-1 text-gray-500">
                                                     {moment(msg.createdAt).format("HH:mm")}
                                                 </p>
                                             </div>
                                         </div>
                                     </>
 
-                                        : <div className="flex mb-2">
-                                            <div className="rounded py-2 px-3" style={{ backgroundColor: "#F2F2F2" }}>
-                                                <p className="text-sm text-purple">
-                                                    {msg.message}
-                                                </p>
+                                        : <>
 
-                                                <p className="text-right text-xs text-grey-dark mt-1">
-                                                    {moment(msg.createdAt).format("HH:mm")}
-                                                </p>
+                                            <div className="flex mb-2">
+                                                <div className="rounded py-2 px-3" style={{ backgroundColor: "#F2F2F2" }}>
+                                                    <p className="text-sm font-medium ">
+                                                        {msg.message}
+                                                    </p>
+
+                                                    <p className="text-right text-xs mt-1 text-gray-500">
+                                                        {moment(msg.createdAt).format("HH:mm")}
+                                                    </p>
+                                                </div>
                                             </div>
-                                        </div>
+                                         
+                                            {typing && <div className=" typingDiv"></div>}
+
+                                        </>
                                     }
                                 </div>
                             })
@@ -247,7 +290,7 @@ const FriendRightBox = ({ selectedChatUser }: { selectedChatUser: ChatUser | nul
 
 
                 {/* Input */}
-                {messages?.friendStatus === enums.Accepted && <Input submitMessageFunc={submitMessageFunc} receiverId={selectedChatUser?._id} />}
+                {messages?.friendStatus === enums.Accepted && <Input handleTyping={handleTyping} submitMessageFunc={submitMessageFunc} receiverId={selectedChatUser?._id} />}
             </div>
             : <>
 
