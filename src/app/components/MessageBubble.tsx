@@ -28,7 +28,7 @@ const MessageBubble = ({ chatUserName, message }: { chatUserName: AllUserType, m
           >
             <p className="text-sm leading-relaxed">{message.message}</p>
           </div>
-          <span className={`text-xs text-gray-500 mt-1 ${message.isOwn ? 'text-right' : 'text-left'}`}>
+          <span className={`text-xs text-gray-500 mt-1 ${chatUserName?._id !== message.senderId ? 'text-right' : 'text-left'}`}>
 
             {moment(message?.lastChat?.createdAt).format("HH:mm")}
           </span>
