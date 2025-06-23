@@ -1,9 +1,4 @@
-export type AllUserType = {
-    _id: string;
-    fullName: string;
-    email: string;
-    mobile: string;
-};
+
 
 export type FriendRequestStatusType = 'pending' | 'accepted' | 'rejected';
 
@@ -11,6 +6,7 @@ export type FriendRequestType = {
     sender: string; // user _id
     receiver: string; // user _id
     status: FriendRequestStatusType;
+
 };
 
 
@@ -20,6 +16,10 @@ export interface Message {
     receiverId: string;
     message: string;
     createdAt?: string;
+    lastChat?: {
+        message: string,
+        createdAt: string
+    }
 }
 export interface MessageData {
     data: Message[],
@@ -35,5 +35,31 @@ export interface SendFriendRequestType {
     friendStatus: string;
     id: string;
     updatedAt: string;
-    friendRequestBy:string
+    friendRequestBy: string
 }
+
+
+export interface Conversation {
+    id: string;
+    name: string;
+    lastMessage: string;
+    timestamp: string;
+    unreadCount: number;
+    avatar: string;
+    isOnline: boolean;
+}
+
+
+export type AllUserType = {
+    _id: string;
+    fullName: string;
+    email: string;
+    mobile: string;
+    friendStatus?: string | null;
+    avatar?: string;
+    isOnline?: boolean;
+    lastChat?: {
+        message: string,
+        createdAt: string
+    }
+};

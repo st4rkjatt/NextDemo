@@ -171,10 +171,10 @@ const FriendRightBox = ({ selectedChatUser }: { selectedChatUser: ChatUser | nul
                 setTyping(false);
             }, 2000); // Clear typing after 2 seconds
         }
-       
+
     }
-console.log(typing, 'messages in friend right box')
-    
+    console.log(typing, 'messages in friend right box')
+
     return <>
         {selectedChatUser ?
 
@@ -272,7 +272,7 @@ console.log(typing, 'messages in friend right box')
                                                     </p>
                                                 </div>
                                             </div>
-                                         
+
                                             {typing && <div className=" typingDiv"></div>}
 
                                         </>

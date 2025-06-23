@@ -28,7 +28,7 @@ const FrindLeftBox = ({ setSelectedChatUser, selectedChatUser }: FriendLeftBoxPr
         getUserData()
         getAllUsers()
     }, [])
-
+    
     const getAllUsers = async () => {
         try {
 
