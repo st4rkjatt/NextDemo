@@ -71,7 +71,12 @@ const MessageInput = ({ receiverId, submitMessageFunc, handleTyping }: InputProp
             onKeyDown={(e) => {
               if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
-                handleSubmit(e);
+                // Directly send the message logic here
+                if (message.trim()) {
+                  sendMessage(message);
+                  submitMessageFunc(message);
+                  setMessage("");
+                }
               }
             }}
           />
