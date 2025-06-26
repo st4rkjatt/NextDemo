@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
 
         }
 
-        console.log(conversation, 'conversation')
+        // console.log(conversation, 'conversation')
         if (conversation && conversation.friendStatus !== enums.Accepted) {
             return NextResponse.json({
                 message: "Conversation not found", status: true, result: {

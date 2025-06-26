@@ -99,6 +99,29 @@ const socket = (_: NextApiRequest, res: NextApiResponseSocketIO) => {
         }
       })
 
+      //************************* */ for video call************************************
+      socket.on("callUser", (data) => {
+        const recipientSocketId = userSocketMap.get(data.userToCall);
+        console.log(recipientSocketId, 'recipientSocket?')
+        const send = io.to(recipientSocketId).emit('receivingCallFromSend', { signal: data.signalData, from: data.from });
+        if (send) {
+          console.log('send call to user')
+        } else {
+          console.log("Recipient not connected");
+        }
+      })
+
+      socket.on("acceptCall", (data) => {
+        // Find the socket ID of the user who is accepting the call
+        const recipientSocketId = userSocketMap.get(data.to);
+        console.log(recipientSocketId, 'recipientSocket?')
+        const ans = io.to(recipientSocketId).emit('callAccepted', data.signal);
+        if (ans) {
+          console.log('send call to user')
+        } else {
+          console.log("Recipient not connected");
+        }
+      })
     });
 
     // we can attach this to the response object to expose it to  other

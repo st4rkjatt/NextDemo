@@ -5,7 +5,7 @@ import { Send, Paperclip, Smile } from 'lucide-react';
 interface InputProps {
   receiverId: string | undefined;
   submitMessageFunc: (message: string) => void;
-  handleTyping: () => void;
+  handleTyping?: () => void;
 }
 
 const MessageInput = ({ receiverId, submitMessageFunc, handleTyping }: InputProps) => {
@@ -46,7 +46,7 @@ const MessageInput = ({ receiverId, submitMessageFunc, handleTyping }: InputProp
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const { value } = e.target;
     setMessage(value)
-    handleTyping()
+  
   }
 
   return (

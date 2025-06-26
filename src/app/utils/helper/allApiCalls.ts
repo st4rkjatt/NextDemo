@@ -29,3 +29,16 @@ export const getUserData = async () => {
         console.error("Error fetching user data:", error);
     }
 }
+
+
+export const getConversation = async (id: string) => {
+    try {
+        const response = await fetch(`/api/getconversation/${id}`);
+        const data = await response.json();
+        // console.log(data.result, 'data.result')
+        return data.result
+    } catch (error) {
+        console.error("Error fetching conversation:", error);
+    }
+};
+
