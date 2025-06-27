@@ -1,5 +1,5 @@
 // ✨ Cleaned and improved ChatArea.tsx ✨
-import { MicOff, PhoneOff, Video } from 'lucide-react';
+import { Menu, MicOff, PhoneOff, Video } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import Peer from 'simple-peer';
 
@@ -234,6 +234,20 @@ const ChatArea = ({ selectedChatUser, onOpenSidebar }: { selectedChatUser: AllUs
   };
 
   console.log(showStream, stream, remoteStream, 'showStream stream remoteStream');
+
+  if (!selectedChatUser) {
+    return (
+      <div className="flex-1 flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Menu className="w-10 h-10 text-gray-400" onClick={onOpenSidebar} />
+          </div>
+          <h3 className="text-lg font-medium text-gray-900 mb-2">No conversation selected</h3>
+          <p className="text-gray-600">Choose a conversation from the sidebar to start chatting</p>
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="relative flex-1 flex flex-col h-full">
       <ChatHeader selectedChatUser={selectedChatUser} onOpenSidebar={onOpenSidebar} handleCall={handleCall} />
