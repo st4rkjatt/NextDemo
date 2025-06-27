@@ -5,7 +5,7 @@ import { Ref } from "react";
 
 
 
-const MessageBubble = ({ messagesEndRef, chatUserName, message }: { messagesEndRef: Ref<HTMLDivElement> | undefined, chatUserName: AllUserType, message: Message }) => {
+const MessageBubble = ({ messagesEndRef, chatUserName, message }: { messagesEndRef: Ref<HTMLDivElement> | undefined, chatUserName: AllUserType | null, message: Message }) => {
   // console.log(chatUserName?._id === message.senderId, 'chatUserName?._id === message.receiverId')
   return (<>
 

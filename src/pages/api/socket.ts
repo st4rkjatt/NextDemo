@@ -101,9 +101,17 @@ const socket = (_: NextApiRequest, res: NextApiResponseSocketIO) => {
 
       //************************* */ for video call************************************
       socket.on("callUser", (data) => {
+
         const recipientSocketId = userSocketMap.get(data.userToCall);
-        console.log(recipientSocketId, 'recipientSocket?')
-        const send = io.to(recipientSocketId).emit('receivingCallFromSend', { signal: data.signalData, from: data.from });
+
+        console.log(recipientSocketId, 'recipientSocket? callUser')
+
+        const send = io.to(recipientSocketId).emit("hey", {
+          signal: data.signalData,
+          from: data.from,
+          fromName: data.fromName
+        });
+
         if (send) {
           console.log('send call to user')
         } else {
@@ -111,10 +119,19 @@ const socket = (_: NextApiRequest, res: NextApiResponseSocketIO) => {
         }
       })
 
+      socket.on("endCall", ({to}) => {
+        console.log(to, 'end call')
+        const recipientSocketId = userSocketMap.get(to);
+        console.log(recipientSocketId, 'recipientSocket? endCall')
+        io.to(recipientSocketId).emit("callEnded");
+
+      })
+
+
       socket.on("acceptCall", (data) => {
         // Find the socket ID of the user who is accepting the call
         const recipientSocketId = userSocketMap.get(data.to);
-        console.log(recipientSocketId, 'recipientSocket?')
+        console.log(recipientSocketId, 'recipientSocket? acceptCall')
         const ans = io.to(recipientSocketId).emit('callAccepted', data.signal);
         if (ans) {
           console.log('send call to user')
@@ -122,6 +139,16 @@ const socket = (_: NextApiRequest, res: NextApiResponseSocketIO) => {
           console.log("Recipient not connected");
         }
       })
+
+
+      socket.on("rejectCall", (data) => {
+        console.log(data, 'reject call')
+        // Find the socket ID of the user who is rejecting the call 
+        const recipientSocketId = userSocketMap.get(data.to);
+        console.log(recipientSocketId, 'recipientSocket? rejectCall')
+        io.to(recipientSocketId).emit("callRejected");
+      });
+
     });
 
     // we can attach this to the response object to expose it to  other

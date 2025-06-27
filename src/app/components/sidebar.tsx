@@ -48,7 +48,7 @@ const Sidebar = ({ selectedChatUser, setSelectedChatUser, selectedConversation, 
 
       const response = await fetch('api/getFriends');
       const data = await response.json();
-      console.log(data, 'data');
+      // console.log(data, 'data');
       setAllUsers(data.result);
     }
     catch (error) {

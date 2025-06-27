@@ -11,7 +11,7 @@ export function ChatHeader({  selectedChatUser, onOpenSidebar,handleCall }: { se
               onClick={onOpenSidebar}
               className="lg:hidden p-2 hover:bg-gray-100 rounded-full transition-colors"
             >
-              <Menu className="w-5 h-5 text-gray-600" />
+              <Menu className="w-5 h-5 text-gray-600 cursor-pointer" />
             </button>
 
             <div className="relative  ">
@@ -32,13 +32,13 @@ export function ChatHeader({  selectedChatUser, onOpenSidebar,handleCall }: { se
           </div>
 
           <div className="flex items-center space-x-2">
-            <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+            <button className="p-2 cursor-pointer hover:bg-gray-100 rounded-full transition-colors">
               <Phone className="w-5 h-5 text-gray-600" />
             </button>
-            <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
-              <Video className="w-5 h-5 text-gray-600" onClick={handleCall}/>
+            <button className="p-2 cursor-pointer hover:bg-gray-100 rounded-full transition-colors" onClick={handleCall}>
+              <Video className="w-5 h-5 text-gray-600 cursor-pointer" />
             </button>
-            <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+            <button className="p-2 cursor-pointer hover:bg-gray-100 rounded-full transition-colors">
               <MoreVertical className="w-5 h-5 text-gray-600" />
             </button>
           </div>
