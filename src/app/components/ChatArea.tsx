@@ -173,6 +173,17 @@ const ChatArea = ({ selectedChatUser, onOpenSidebar }: { selectedChatUser: AllUs
   };
 
   const handleCall = async () => {
+
+    const permissionGranted = await checkAndRequestPermissions();
+
+    if (!permissionGranted) {
+      alert(
+        'Camera and microphone permissions are required. Please enable them in your browser settings and try again.'
+      );
+      return;
+    }
+
+
     setshowStream(true);
     await setupMedia();
     callPeer();
@@ -209,6 +220,17 @@ const ChatArea = ({ selectedChatUser, onOpenSidebar }: { selectedChatUser: AllUs
     socket.emit('rejectCall', { to: caller });
     setReceivingCall(false);
     setshowStream(false);
+  };
+
+  const checkAndRequestPermissions = async (): Promise<boolean> => {
+    try {
+      const permissions = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+      permissions.getTracks().forEach((track) => track.stop()); // Stop immediately after check
+      return true;
+    } catch (error) {
+      console.error('Permission denied:', error);
+      return false;
+    }
   };
 
   console.log(showStream, stream, remoteStream, 'showStream stream remoteStream');
