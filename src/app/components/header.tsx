@@ -23,7 +23,7 @@ const Header: React.FC = () => {
             console.log('User logged out successfully:', data);
             setTimeout(() => {
                 toast.success(data.message);
-            }, 1000);
+            }, 500);
             router.push('/login'); // Redirect to home page on successful login
 
         } catch (error) {

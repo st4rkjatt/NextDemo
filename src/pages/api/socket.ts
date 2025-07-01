@@ -17,7 +17,6 @@ export interface NextApiResponseSocketIO extends NextApiResponse {
 const userSocketMap = new Map(); // Maps user IDs to socket IDs
 
 const socket = (_: NextApiRequest, res: NextApiResponseSocketIO) => {
-  console.log('request come in backend')
   if (!res.socket.server.io) {
     const io = new SocketServer(res.socket.server, {
       path: "/api/socket"
@@ -53,7 +52,7 @@ const socket = (_: NextApiRequest, res: NextApiResponseSocketIO) => {
           message
         }
         console.log(data, 'send data')
-
+        console.log(userSocketMap, 'userSocketMap')
         const recipientSocketId = userSocketMap.get(receiverId)
         console.log(recipientSocketId, 'recipientSocket?')
 
@@ -101,15 +100,13 @@ const socket = (_: NextApiRequest, res: NextApiResponseSocketIO) => {
 
       //************************* */ for video call************************************
       socket.on("callUser", (data) => {
-
+        console.log(data.fromUserName + 'doing call to ' +data.userToCall)
         const recipientSocketId = userSocketMap.get(data.userToCall);
-
         console.log(recipientSocketId, 'recipientSocket? callUser')
-
         const send = io.to(recipientSocketId).emit("hey", {
           signal: data.signalData,
           from: data.from,
-          fromName: data.fromName
+          fromName: data.fromUserName
         });
 
         if (send) {
@@ -119,8 +116,8 @@ const socket = (_: NextApiRequest, res: NextApiResponseSocketIO) => {
         }
       })
 
-      socket.on("endCall", ({to}) => {
-        console.log(to, 'end call')
+      socket.on("endCall", ({ to }) => {
+        console.log(to, 'end call { to: caller }')
         const recipientSocketId = userSocketMap.get(to);
         console.log(recipientSocketId, 'recipientSocket? endCall')
         io.to(recipientSocketId).emit("callEnded");

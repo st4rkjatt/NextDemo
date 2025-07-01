@@ -5,11 +5,9 @@ import { Ref } from "react";
 
 
 
-const MessageBubble = ({ messagesEndRef, chatUserName, message }: { messagesEndRef: Ref<HTMLDivElement> | undefined, chatUserName: AllUserType | null, message: Message }) => {
-  // console.log(chatUserName?._id === message.senderId, 'chatUserName?._id === message.receiverId')
-  return (<>
-
-    <div ref={messagesEndRef} className={`flex ${chatUserName?._id === message.receiverId ? 'justify-end' : 'justify-start'} animate-fade-in`}>
+const MessageBubble = ({id, messagesEndRef, chatUserName, message }: {id:number |null | undefined, messagesEndRef: Ref<HTMLDivElement> | undefined, chatUserName: AllUserType | null, message: Message }) => {
+  return (
+    <div key={id} ref={messagesEndRef} className={`flex ${chatUserName?._id === message.receiverId ? 'justify-end' : 'justify-start'} animate-fade-in`}>
       <div className={`flex items-end space-x-2 max-w-xs lg:max-w-md ${chatUserName?._id === message.receiverId ? 'flex-row-reverse space-x-reverse' : ''}`}>
         {chatUserName?._id === message.senderId && (
           <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-sm font-semibold flex-shrink-0">
@@ -36,7 +34,7 @@ const MessageBubble = ({ messagesEndRef, chatUserName, message }: { messagesEndR
         </div>
       </div>
     </div>
-  </>
+  
   );
 };
 

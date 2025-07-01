@@ -1,10 +1,12 @@
 "use client";
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 import { SplitText } from 'gsap/dist/SplitText';
 import './profile.css';
 import Header from '../components/header';
+import { useChatStore } from '@/stores/store';
+import socket from '../utils/helper/socketGlobal';
 
 if (typeof window !== 'undefined') {
     gsap.registerPlugin(ScrollTrigger, SplitText);
@@ -16,12 +18,13 @@ interface UserData {
     isAdmin: boolean;
     isVerified: boolean;
     mobile: string;
-    __v: number;
     _id: string;
 }
 
 export default function Home() {
-    const [userData, setUserData] = useState<UserData | null>(null);
+    const setMe = useChatStore((state) => state.setMe);
+    const me = useChatStore((state) => state.me);
+
     useEffect(() => {
         getUserData()
         // Only run animations on client side
@@ -198,33 +201,33 @@ export default function Home() {
                 }
             });
             // Cursor animation
-            gsap.set(".cursor", { force3D: true });
-            document.addEventListener("mousemove", (e) => {
-                const x = e.clientX;
-                const y = e.clientY;
+            // gsap.set(".cursor", { force3D: true });
+            // document.addEventListener("mousemove", (e) => {
+            //     const x = e.clientX;
+            //     const y = e.clientY;
 
-                gsap.to(".cursor", {
-                    x: x - 16,
-                    y: y - 16,
-                    ease: "power3"
-                });
-            });
+            //     gsap.to(".cursor", {
+            //         x: x - 16,
+            //         y: y - 16,
+            //         ease: "power3"
+            //     });
+            // });
 
-            document.body.addEventListener("mouseleave", () => {
-                gsap.to(".cursor", {
-                    scale: 0,
-                    duration: 0.1,
-                    ease: "none"
-                });
-            });
+            // document.body.addEventListener("mouseleave", () => {
+            //     gsap.to(".cursor", {
+            //         scale: 0,
+            //         duration: 0.1,
+            //         ease: "none"
+            //     });
+            // });
 
-            document.body.addEventListener("mouseenter", () => {
-                gsap.to(".cursor", {
-                    scale: 1,
-                    duration: 0.1,
-                    ease: "none"
-                });
-            });
+            // document.body.addEventListener("mouseenter", () => {
+            //     gsap.to(".cursor", {
+            //         scale: 1,
+            //         duration: 0.1,
+            //         ease: "none"
+            //     });
+            // });
 
             const hoverCursors = document.querySelectorAll('[data-cursor="hover"]');
 
@@ -259,21 +262,27 @@ export default function Home() {
         try {
 
             const response = await fetch('/api/me');
-
             const data = await response.json();
-            console.log(data, 'data');
-            setUserData(data.result);
+            setMe(data.result);
         }
         catch (error) {
             console.error("Error fetching user data:", error);
         }
     }
 
+    useEffect(() => {
+        if (me) {
+            const userDetails = {
+                userId: me?._id,
+            };
+            socket.emit('registerUser', userDetails);
+        }
+    }, [])
 
     return (
         <main>
             <Header />
-            <IntroSection data={userData} />
+            <IntroSection data={me} />
             <TextSection />
             <WorksSection />
             <FooterSection />
@@ -324,9 +333,9 @@ const FooterSection = () => (
 const WorksSection = () => (
     <section className="section section--works">
         <div className="cards">
-            <a  className="card card-1" data-cursor="hover"></a>
-            <a  className="card card-2" data-cursor="hover"></a>
-            <a  className="card card-3" data-cursor="hover"></a>
+            <a className="card card-1" data-cursor="hover"></a>
+            <a className="card card-2" data-cursor="hover"></a>
+            <a className="card card-3" data-cursor="hover"></a>
         </div>
 
         <CrossIcon className="cross-3" />

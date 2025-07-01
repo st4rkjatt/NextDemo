@@ -11,7 +11,7 @@ body {
   /* background-color: var(--black); */
   /* background: linear-gradient(90deg, var(--black) 20px, transparent 1%) 50%, linear-gradient(var(--black) 20px, transparent 1%) 50%, #222; */
   background-attachment: fixed;
-  color: #fff;
+  /* color: #fff; */
   font-family: 'Barlow Semi Condensed', sans-serif;
   overflow-x: hidden;
 }

@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { models } from "mongoose";
 
 const userSchema = new mongoose.Schema({
     fullName: {
@@ -11,18 +11,18 @@ const userSchema = new mongoose.Schema({
         required: [true, "Please provide email"],
         unique: true,
     },
-    mobile:{
+    mobile: {
         type: String,
         required: [true, "Please provide mobile number"],
         unique: false,
     },
     password: {
-       type: String,
-       required: [true, "Please provide a password"],
+        type: String,
+        required: [true, "Please provide a password"],
     },
     isVerified: {
-       type: Boolean,
-       default: false,
+        type: Boolean,
+        default: false,
     },
     isAdmin: {
         type: Boolean,
@@ -34,6 +34,6 @@ const userSchema = new mongoose.Schema({
     verifyTokenExpiry: Date,
 })
 
-const User =mongoose.model("user", userSchema);
+const User = models.User || mongoose.model("User", userSchema);
 
 export default User;

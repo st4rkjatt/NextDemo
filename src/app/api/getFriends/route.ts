@@ -25,9 +25,7 @@ export async function GET(request: NextRequest) {
                 friendStatus: 'accepted',
             })
             let friendStatus
-            console.log(conversation, 'conversation22')
-            console.log(friendStatus, 'conversation22')
-
+          
             let lastmessageId
             if (conversation) {
                 friendStatus = conversation.friendStatus
@@ -47,9 +45,7 @@ export async function GET(request: NextRequest) {
             };
         }) || []);
 
-        console.log(allFriend, 'all friend')
-
-        // if (!result) {
+            // if (!result) {
         //     return NextResponse.json({ message: "User not found", status: false }, { status: 404 });
         // }
         return NextResponse.json({ message: "User data fetched successfully", status: true, result: allFriend }, { status: 200 });

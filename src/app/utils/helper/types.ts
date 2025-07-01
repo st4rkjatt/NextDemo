@@ -63,3 +63,18 @@ export type AllUserType = {
         createdAt: string
     }
 };
+
+export interface UserType {
+    _id: string;
+    fullName: string;
+    email: string;
+    mobile: string;
+    isVerified: boolean;
+    isAdmin: boolean;
+}
+
+export type CallerType = {
+    signal: string;
+    from: string;
+    fromName: string;
+};

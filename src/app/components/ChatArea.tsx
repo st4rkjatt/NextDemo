@@ -8,10 +8,11 @@ import {
   acceptFriendRequest,
   friendRequest,
   getConversation,
-  getUserData,
+
 } from '../utils/helper/allApiCalls';
 import {
   AllUserType,
+  CallerType,
   Message,
   MessageData,
 
@@ -25,29 +26,26 @@ import MessageInput from './MessageInput';
 import IncomingCallModal from './IncomingCallModal';
 
 const ChatArea = ({ selectedChatUser, onOpenSidebar }: { selectedChatUser: AllUserType | null; onOpenSidebar: () => void }) => {
-  const [userData, setUserData] = useState<AllUserType | null>(null);
+
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [showStream, setshowStream] = useState<Boolean>(false);
   const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
   const [peer, setPeer] = useState<Peer.Instance | null>(null);
   const [callerSignal, setCallerSignal] = useState<any>(null);
-  const [caller, setCaller] = useState('');
   const [receivingCall, setReceivingCall] = useState(false);
+  const [caller, setCaller] = useState<string>('');
+  const [callerName, setCallerName] = useState<string>('');
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const userVideo = useRef<HTMLVideoElement | null>(null);
   const partnerVideo = useRef<HTMLVideoElement | null>(null);
   const callAcceptedHandler = useRef<any>(null);
+  const me = useChatStore((state) => state.me);
 
   const { messages, setMessages, addMessage, setFriendRequest, receiveFriendRequest, receiverFriendAccept } = useChatStore();
 
   // ⛏️ Setup media once
   useEffect(() => {
-    const fetchUserData = async () => {
-      const user = await getUserData();
-      setUserData(user);
-    };
 
-    fetchUserData();
     setupMedia();
 
     socket.on('receiveMessage', handleIncomingMessage);
@@ -70,13 +68,13 @@ const ChatArea = ({ selectedChatUser, onOpenSidebar }: { selectedChatUser: AllUs
   }, []);
 
   useEffect(() => {
-    if (!selectedChatUser || !userData) return;
+    if (!selectedChatUser || !me) return;
     (async () => {
       const data: MessageData = await getConversation(selectedChatUser._id);
       setMessages(data);
-      socket.emit('registerUser', { userId: userData._id });
+
     })();
-  }, [selectedChatUser, userData]);
+  }, [selectedChatUser, me]);
 
   useEffect(() => {
     if (stream && userVideo.current) {
@@ -92,10 +90,21 @@ const ChatArea = ({ selectedChatUser, onOpenSidebar }: { selectedChatUser: AllUs
     }
   }, [remoteStream]);
 
+
+  useEffect(() => {
+    if (me) {
+      const userDetails = {
+        userId: me?._id,
+      };
+      socket.emit('registerUser', userDetails);
+    }
+  }, [me])
+
   const setupMedia = async () => {
     try {
       const media = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
       setStream(media);
+      return media
     } catch (error) {
       console.error('Media error:', error);
     }
@@ -103,61 +112,69 @@ const ChatArea = ({ selectedChatUser, onOpenSidebar }: { selectedChatUser: AllUs
 
   const handleIncomingMessage = (msg: Message) => addMessage(msg);
 
-  const handleIncomingCall = ({ from, signal }: { from: string; signal: any }) => {
-    console.log('Incoming call from: hey', from);
+  const handleIncomingCall = ({ from, signal, fromName }: { from: string; signal: string, fromName: string }) => {
+    console.log('Incoming call from: hey', from, signal, fromName);
     setReceivingCall(true);
     setCaller(from);
+    setCallerName(fromName)
     setCallerSignal(signal);
   };
 
   const submitMessageFunc = (msg: string) => {
-    if (!userData || !selectedChatUser) return;
+    if (!me || !selectedChatUser) return;
 
-    const newMsg = { senderId: userData._id, receiverId: selectedChatUser._id, message: msg };
+    const newMsg = { senderId: me._id, receiverId: selectedChatUser._id, message: msg };
     socket.emit('sendMessage', newMsg);
     addMessage(newMsg);
   };
 
   const sendFriendRequestHandler = async () => {
-    if (!userData || !selectedChatUser) return;
+    if (!me || !selectedChatUser) return;
     const status = await friendRequest({ id: selectedChatUser._id });
-    socket.emit('sendFriendRequest', { ...status, to: selectedChatUser._id, friendRequestBy: userData._id });
+    socket.emit('sendFriendRequest', { ...status, to: selectedChatUser._id, friendRequestBy: me._id });
     setFriendRequest(status);
   };
 
   const acceptFriendRequestHandler = async () => {
-    if (!userData || !selectedChatUser) return;
+    if (!me || !selectedChatUser) return;
     const status = await acceptFriendRequest({ id: selectedChatUser._id });
     socket.emit('acceptFriendRequest', { ...status, to: selectedChatUser._id });
     receiveFriendRequest(status);
   };
 
   const handleEndCall = () => {
-    console.log('Call ended');
+    console.log('{ to: caller }??')
     peer?.destroy();
     setRemoteStream(null);
     setshowStream(false);
     setStream(null);
   }
-  const callPeer = () => {
-    if (!stream || !selectedChatUser || !userData) return;
+  const callPeer = async (activeStream: MediaStream | null) => {
+    console.log(activeStream, selectedChatUser, me, '???')
+
+    if (!activeStream || !selectedChatUser || !me) return
 
     if (peer) {
       peer.destroy();
       socket.off('callAccepted', callAcceptedHandler.current);
     }
 
-    const newPeer = new Peer({ initiator: true, trickle: false, stream });
+    const newPeer = new Peer({ initiator: true, trickle: false, stream: activeStream || undefined });
 
     newPeer.on('signal', (data) => {
+      console.log("signal?", data)
       socket.emit('callUser', {
-        userToCall: selectedChatUser._id,
+        userToCall: selectedChatUser?._id,
         signalData: data,
-        from: userData._id,
+        from: me?._id,
+        fromUserName: me?.fullName,
       });
     });
 
-    newPeer.on('stream', (incoming) => setRemoteStream(incoming));
+    newPeer.on('stream', (incoming) => {
+      console.log('stream?', incoming)
+      setRemoteStream(incoming)
+    });
     newPeer.on('error', console.error);
     newPeer.on('close', () => {
       setRemoteStream(null);
@@ -173,30 +190,36 @@ const ChatArea = ({ selectedChatUser, onOpenSidebar }: { selectedChatUser: AllUs
   };
 
   const handleCall = async () => {
+    let activeStream = stream;
+    if (!activeStream) {
+      activeStream = (await setupMedia()) ?? null; // ensures stream is set and type is MediaStream | null
+    }
 
-    // const permissionGranted = await checkAndRequestPermissions();
-
-    // if (!permissionGranted) {
-    //   alert(
-    //     'Camera and microphone permissions are required. Please enable them in your browser settings and try again.'
-    //   );
-    //   return;
-    // }
-
-
-    setshowStream(true);
-    await setupMedia();
-    callPeer();
+    // Wait until stream is available in state
+    if (activeStream) {
+      setshowStream(true);
+      callPeer(activeStream);
+    }
   };
 
   const acceptCall = async () => {
-    if (!stream) await setupMedia();
+    let activeStream = stream;
+    if (!activeStream) {
+      activeStream = (await setupMedia()) ?? null
+    }
     if (peer) peer.destroy();
     setshowStream(true);
-    const newPeer = new Peer({ initiator: false, trickle: false, stream: stream || undefined });
+    const newPeer = new Peer({ initiator: false, trickle: false, stream: activeStream || undefined });
 
-    newPeer.on('signal', (data) => socket.emit('acceptCall', { signal: data, to: caller }));
-    newPeer.on('stream', (incoming) => setRemoteStream(incoming));
+    newPeer.on('signal', (data) => {
+      console.log('accept side signal', data)
+      socket.emit('acceptCall', { signal: data, to: caller })
+    }
+    );
+    newPeer.on('stream', (incoming) => {
+      console.log('accept side stream', incoming)
+      setRemoteStream(incoming)
+    });
     newPeer.on('error', console.error);
     newPeer.on('close', () => {
       setRemoteStream(null);
@@ -210,10 +233,10 @@ const ChatArea = ({ selectedChatUser, onOpenSidebar }: { selectedChatUser: AllUs
 
   const endCall = () => {
     peer?.destroy();
-    setRemoteStream(null);
+    // setRemoteStream(null);
     setshowStream(false);
-    setStream(null);
-    socket.emit('endCall', { to: caller });
+    // setStream(null);
+    socket.emit('endCall', { to: caller || me?._id });
   };
 
   const rejectCall = () => {
@@ -234,7 +257,12 @@ const ChatArea = ({ selectedChatUser, onOpenSidebar }: { selectedChatUser: AllUs
     }
   };
 
-  console.log(showStream, stream, remoteStream, 'showStream stream remoteStream');
+  // Scroll to bottom when messages change
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages]);
 
   if (!selectedChatUser) {
     return (
@@ -252,18 +280,12 @@ const ChatArea = ({ selectedChatUser, onOpenSidebar }: { selectedChatUser: AllUs
   return (
     <div className="relative flex-1 flex flex-col h-full">
       <ChatHeader selectedChatUser={selectedChatUser} onOpenSidebar={onOpenSidebar} handleCall={handleCall} />
-
       <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gradient-to-b from-gray-50 to-white">
         {messages?.friendStatus === enums.Accepted ? (
           <>
-            <div className="flex justify-center mb-4">
-              <div className="rounded py-2 px-4 bg-yellow-100 text-xs">
-                Messages and calls are end-to-end encrypted.
-              </div>
-            </div>
             <div>
-              {messages.data?.map((message) => (
-                <MessageBubble key={message._id} message={message} chatUserName={selectedChatUser} messagesEndRef={messagesEndRef} />
+              {messages.data?.map((message, i) => (
+                <MessageBubble id={i} message={message} chatUserName={selectedChatUser} messagesEndRef={messagesEndRef} />
               ))}
             </div>
           </>
@@ -272,7 +294,7 @@ const ChatArea = ({ selectedChatUser, onOpenSidebar }: { selectedChatUser: AllUs
             <FriendRequestButton
               friendStatus={messages?.friendStatus}
               friendRequestBy={messages?.friendRequestBy}
-              currentUserId={userData?._id}
+              currentUserId={me?._id}
               onSendRequest={sendFriendRequestHandler}
               onAcceptRequest={acceptFriendRequestHandler}
             />
@@ -282,11 +304,11 @@ const ChatArea = ({ selectedChatUser, onOpenSidebar }: { selectedChatUser: AllUs
 
       <MessageInput submitMessageFunc={submitMessageFunc} receiverId={selectedChatUser?._id} />
 
+      {/* Remote video full screen */}
       {stream && (
         <div className={`fixed inset-0 z-50 bg-black/80 flex items-center justify-center ${showStream ? 'block' : 'hidden'}`}>
           <div className="relative w-full max-w-5xl h-[90vh] sm:h-[80vh] rounded-xl shadow-2xl overflow-hidden flex flex-col bg-gray-800 text-white">
 
-            {/* Remote video full screen */}
             <video
               ref={partnerVideo}
               autoPlay
@@ -327,7 +349,7 @@ const ChatArea = ({ selectedChatUser, onOpenSidebar }: { selectedChatUser: AllUs
       {/* Incoming Call Modal */}
       {receivingCall && (
         <div className="absolute inset-0 flex items-center justify-center z-50">
-          <IncomingCallModal handleAccept={acceptCall} handleReject={rejectCall} />
+          <IncomingCallModal caller={caller} callerName={callerName} handleAccept={acceptCall} handleReject={rejectCall} />
         </div>
       )}
     </div>

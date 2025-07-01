@@ -1,8 +1,10 @@
-// store/chatStore.ts
-import { ChatState, Message, MessageData, SendFriendRequestType } from '@/app/utils/helper/types';
+import { ChatState, Message, MessageData, SendFriendRequestType, UserType } from '@/app/utils/helper/types';
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 
 interface ChatStore extends ChatState {
+  me: UserType | null;
+  setMe: (user: UserType) => void;
   setMessages: (msgs: MessageData) => void;
   addMessage: (msg: Message) => void;
   setFriendRequest: (data: SendFriendRequestType) => void;
@@ -10,66 +12,62 @@ interface ChatStore extends ChatState {
   receiverFriendAccept: (data: SendFriendRequestType) => void;
 }
 
-export const useChatStore = create<ChatStore>((set, get) => ({
-  friendStatus: '',
-  messages: {
-    data: [],
-    friendStatus: '',
-  },
-  receiverFriendAccept(data) {
-    const state = get();
-    console.log('receiver accept request', state);
-    set((state) => ({
+export const useChatStore = create<ChatStore>()(
+  persist(
+    (set, get) => ({
+      me: null,
+      setMe: (user: UserType) => set({ me: user }),
+      friendStatus: '',
       messages: {
-        ...state.messages,
-        friendStatus: data.friendStatus,
-        friendRequestBy: data.friendRequestBy
+        data: [],
+        friendStatus: '',
       },
-    }));
-    // console.log('Current msgs:', msgs);
-  },
-  setFriendRequest(data) {
-    // const state = get();
-    // console.log('abvc', state);
-    set((state) => ({
-      messages: {
-        ...state.messages,
-        friendStatus: data.friendStatus,
-        friendRequestBy: data.friendRequestBy
+      setMessages: (msgs) => {
+        set({ messages: msgs });
       },
-    }));
-    // console.log('Current msgs:', msgs);
-  },
-  receiveFriendRequest(data) {
-   
-    set((state) => ({
-      messages: {
-        ...state.messages,
-        friendStatus: data.friendStatus,
-        friendRequestBy: data.friendRequestBy
+      addMessage: (msg) => {
+        const state = get();
+        set({
+          messages: {
+            ...state.messages,
+            data: [...(state.messages?.data || []), msg],
+          },
+        });
       },
-    }));
-    // console.log('Current msgs:', msgs);
-  },
-
-  setMessages: (msgs) => {
-    const state = get();
-    // console.log('Current state in setMessages:', state);
-    // console.log('Current msgs:', msgs);
-    set({ messages: msgs });
-    // console.log('Current state in setMessages:2', state);
-  },
-
-
-  addMessage: (msg) => {
-    const state = get();
-    console.log(msg, 'msg');
-    // console.log('Current state in addMessage:', state.messages.data);
-    set((state) => ({
-      messages: {
-        ...state.messages,
-        data: [...(state.messages?.data || []), msg],
+      setFriendRequest(data) {
+        set((state) => ({
+          messages: {
+            ...state.messages,
+            friendStatus: data.friendStatus,
+            friendRequestBy: data.friendRequestBy,
+          },
+        }));
       },
-    }));
-  }
-}));
+      receiveFriendRequest(data) {
+        set((state) => ({
+          messages: {
+            ...state.messages,
+            friendStatus: data.friendStatus,
+            friendRequestBy: data.friendRequestBy,
+          },
+        }));
+      },
+      receiverFriendAccept(data) {
+        set((state) => ({
+          messages: {
+            ...state.messages,
+            friendStatus: data.friendStatus,
+            friendRequestBy: data.friendRequestBy,
+          },
+        }));
+      },
+    }),
+    {
+      name: 'chat-storage', // localStorage key
+      partialize: (state) => ({
+        me: state.me,
+        messages: state.messages,
+      }),
+    }
+  )
+);

@@ -1,10 +1,7 @@
 "use client"
-
 import { useState } from "react"
-import FriendLeftBox from "../components/friendLeftBox"
-import FriendRightBox from "../components/friendRightBox"
 import Header from "../components/header"
-import { AllUserType, Conversation, Message } from "../utils/helper/types"
+import { AllUserType } from "../utils/helper/types"
 import Sidebar from "../components/sidebar"
 import ChatArea from "../components/ChatArea"
 
